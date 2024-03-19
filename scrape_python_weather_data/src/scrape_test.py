@@ -1,8 +1,6 @@
-import requests
 import re
 import pandas as pd
 import openpyxl
-from bs4 import BeautifulSoup
 from urllib.request import urlopen
 
 
@@ -162,7 +160,7 @@ def find_cloud_base(forecast_table):
         return result
 
 
-def scrape_mtn_current_weather(mtn_name, elev):
+def scrape_mtn_current_weather_at_elev(mtn_name, elev):
     url = f"http://www.mountain-forecast.com/peaks/" \
           f"{mtn_name}/forecasts/{elev}"
     html = urlopen(url).read().decode("utf-8")
@@ -189,13 +187,19 @@ def scrape_mtn_current_weather(mtn_name, elev):
     return df
 
 
-def scrape_mtn_current_weather_multiple_elevs(mtn_name, elevs):
+def scrape_current_weather(mtns_to_elevs):
     dfs = []
-    for elev in elevs:
-        dfs.append(scrape_mtn_current_weather(mtn_name, elev))
+    for mtn_name in mtns_to_elevs.keys():
+        for elev in mtns_to_elevs[mtn_name]:
+            dfs.append(scrape_mtn_current_weather_at_elev(mtn_name, elev))
+            print(f'{mtn_name} at {elev}: complete.')
     return pd.concat(dfs, ignore_index=True)
 
 
-result_df = scrape_mtn_current_weather_multiple_elevs(
-    'Nanga-Parbat', [8125, 7500, 6500, 5500, 4500, 3500, 2500])
+result_df = scrape_current_weather(
+    {
+        'Nanga-Parbat': [8125, 7500, 6500, 5500, 4500, 3500, 2500],
+        'Dhaulagiri': [8167, 7500, 6500, 5500, 4500, 3500, 2500, 1500]
+    }
+)
 result_df.to_excel(f'FINAL.xlsx')
