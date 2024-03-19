@@ -84,7 +84,7 @@ def find_max_temp(forecast_table):
         (<div\ class="forecast-table__container\ forecast-table__container--stretch\ forecast-table__container--max)
         # above: start of the container with the max temp. datum
         (\ forecast-table__container--border)?          # this bit of text appears only when the cell is on the edge
-        (\ temp-value\ temp-value--[0-9]")              # temp-value-- seems to be followed by a single integer
+        (\ temp-value\ temp-value--[0-9]*")              # temp-value-- seems to be followed by a single integer
         (\ data-value="-?[0-9]?[0-9]?[0-9]?\.[0-9]?")?  # I believe this will always occur for our use cases but added ? just in case
         (>)                                             # I've separated the above group out in case data is absent from the cell
         (-?[0-9]?[0-9]?[0-9]?)                          # max temperature datum
@@ -100,7 +100,7 @@ def find_min_temp(forecast_table):
         (<div\ class="forecast-table__container\ forecast-table__container--stretch\ forecast-table__container--min)
         # above: start of the container with the max temp. datum
         (\ forecast-table__container--border)?          # this bit of text appears only when the cell is on the edge
-        (\ temp-value\ temp-value--[0-9]")              # temp-value-- seems to be followed by a single integer
+        (\ temp-value\ temp-value--[0-9]*")              # temp-value-- seems to be followed by a single integer
         (\ data-value="-?[0-9]?[0-9]?[0-9]?\.[0-9]?")?  # I believe this will always occur for our use cases but added ? just in case
         (>)                                             # I've separated the above group out in case data is absent from the cell
         (-?[0-9]?[0-9]?[0-9]?)                          # min temperature datum
@@ -116,7 +116,7 @@ def find_chill(forecast_table):
         (<div\ class="forecast-table__container\ forecast-table__container--stretch)
         # above: start of the container with the chill temp. datum
         (\ forecast-table__container--border)?          # this bit of text appears only when the cell is on the edge
-        (\ temp-value\ temp-value--[0-9]")              # temp-value-- seems to be followed by a single integer
+        (\ temp-value\ temp-value--[0-9]*")              # temp-value-- seems to be followed by a single integer
         (\ data-value="-?[0-9]?[0-9]?[0-9]?\.[0-9]?")?  # I believe this will always occur for our use cases but added ? just in case
         (>)                                             # I've separated the above group out in case data is absent from the cell
         (-?[0-9]?[0-9]?[0-9]?)                          # chill temperature datum
@@ -162,18 +162,19 @@ def find_cloud_base(forecast_table):
         return result
 
 
-def scrape_mtn_current_weather(mtn_name, elevation):
+def scrape_mtn_current_weather(mtn_name, elev):
     url = f"http://www.mountain-forecast.com/peaks/" \
-          f"{mtn_name}/forecasts/{elevation}"
-    # TODO: change back to scraping form for real data
+          f"{mtn_name}/forecasts/{elev}"
     html = urlopen(url).read().decode("utf-8")
-    # html = open('np_html.txt', 'r').read()
     forecast_table = find_forecast_table(html)
 
+    # TODO: format the string data
+    # TODO: add time-related data
+    # TODO: add information about elevations, like peak, base camp, camp I/II/III??
     df = pd.DataFrame(
         {
             'mtn_name': [mtn_name],
-            'elevation': [elevation],
+            'elevation': [elev],
             'forecast_phrase': [find_forecast_phrase(forecast_table)],
             'wind_speed': [find_wind_speed(forecast_table)],
             'snow': [find_snow(forecast_table)],
@@ -185,12 +186,16 @@ def scrape_mtn_current_weather(mtn_name, elevation):
             'cloud_base': [find_cloud_base(forecast_table)]
         }
     )
-    df.to_excel(f'{mtn_name}_{elevation}m.xlsx')
     return df
 
 
-df1 = scrape_mtn_current_weather('Nanga-Parbat', 8125)
-df2 = scrape_mtn_current_weather('Nanga-Parbat', 7500)
-df3 = pd.concat([df1, df2])
-df3.to_excel(f'FINAL.xlsx')
+def scrape_mtn_current_weather_multiple_elevs(mtn_name, elevs):
+    dfs = []
+    for elev in elevs:
+        dfs.append(scrape_mtn_current_weather(mtn_name, elev))
+    return pd.concat(dfs, ignore_index=True)
 
+
+result_df = scrape_mtn_current_weather_multiple_elevs(
+    'Nanga-Parbat', [8125, 7500, 6500, 5500, 4500, 3500, 2500])
+result_df.to_excel(f'FINAL.xlsx')
