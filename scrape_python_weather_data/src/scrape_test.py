@@ -1,6 +1,7 @@
 import requests
 import re
 import pandas as pd
+import openpyxl
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 
@@ -15,6 +16,9 @@ def find_forecast_table(html):
         """, flags=re.VERBOSE | re.DOTALL
     )
     return forecast_table_regex.search(html).group(2)
+
+
+    # TODO: ADD WAY TO FIND TIMES, timestamps for pandas, whatever, etc.
 
 
 def find_forecast_phrase(forecast_table):
@@ -46,13 +50,13 @@ def find_snow(forecast_table):
         fr"""
         (<div\ class="snow-amount".*?><span.*?>)
         # above: start of the container with snow datum
-        (â?€?”?[0-9]*\.?[0-9]?) # amount of snow, or "em dash" if no snow
+        (—?[0-9]*\.?[0-9]?)     # amount of snow, or "em dash" if no snow
         # note: for some reason, the "em dash" becomes "â€”" in the string, so this is what must be searched for
         (<\/span>)              # end of container
         """, flags=re.VERBOSE
     )
     result = snow_regex.search(forecast_table).group(2)
-    if result == "â€”":
+    if result == "—":
         return 0
     else:
         return result
@@ -63,13 +67,12 @@ def find_rain(forecast_table):
         fr"""
         (<div\ class="rain-amount\ forecast-table__container\ forecast-table__container--rain".*?><span.*?>)
         # above: start of the container with rain datum
-        (â?€?”?[0-9]*\.?[0-9]?) # amount of rain, or "em dash" if no rain
-        # note: for some reason, the "em dash" becomes "â€”" in the string, so this is what must be searched for
+        (—?[0-9]*\.?[0-9]?)     # amount of rain, or "em dash" if no rain
         (<\/span>)              # end of container
         """, flags=re.VERBOSE
     )
     result = rain_regex.search(forecast_table).group(2)
-    if result == "â€”":
+    if result == "—":
         return 0
     else:
         return result
@@ -163,12 +166,31 @@ def scrape_mtn_current_weather(mtn_name, elevation):
     url = f"http://www.mountain-forecast.com/peaks/" \
           f"{mtn_name}/forecasts/{elevation}"
     # TODO: change back to scraping form for real data
-    # html = urlopen(url).read().decode("utf-8")
-    html = open('np_html.txt', 'r').read()
+    html = urlopen(url).read().decode("utf-8")
+    # html = open('np_html.txt', 'r').read()
     forecast_table = find_forecast_table(html)
 
-    # create a dataframe
+    df = pd.DataFrame(
+        {
+            'mtn_name': [mtn_name],
+            'elevation': [elevation],
+            'forecast_phrase': [find_forecast_phrase(forecast_table)],
+            'wind_speed': [find_wind_speed(forecast_table)],
+            'snow': [find_snow(forecast_table)],
+            'rain': [find_rain(forecast_table)],
+            'max_temp': [find_max_temp(forecast_table)],
+            'min_temp': [find_min_temp(forecast_table)],
+            'chill': [find_chill(forecast_table)],
+            'freezing_level': [find_freezing_level(forecast_table)],
+            'cloud_base': [find_cloud_base(forecast_table)]
+        }
+    )
+    df.to_excel(f'{mtn_name}_{elevation}m.xlsx')
+    return df
 
 
-scrape_mtn_current_weather('Nanga-Parbat', 8125)
+df1 = scrape_mtn_current_weather('Nanga-Parbat', 8125)
+df2 = scrape_mtn_current_weather('Nanga-Parbat', 7500)
+df3 = pd.concat([df1, df2])
+df3.to_excel(f'FINAL.xlsx')
 

@@ -1,6 +1,6 @@
 result = ""
 
-with open('np_forecast_table.txt', 'r') as f:
+with open('new_table_dump.txt', 'r') as f:
     table = f.read()
     for c in table:
         if c == ">":
@@ -9,4 +9,4 @@ with open('np_forecast_table.txt', 'r') as f:
             result += c
     f.close()
 
-x = open('np_forecast_table_breaks.txt', 'w').write(result)
+x = open('new_table_dump_breaks.txt', 'w').write(result)
