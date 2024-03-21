@@ -18,3 +18,7 @@ result_df = scrape_current_weather(
 #     }
 # )
 result_df.to_excel(f'../data/FINAL.xlsx')
+
+
+# TODO: try writing to parquet? since for some reason mage seems to need to do that and it is giving us issues
+# I expect that I may need to explicitly set the schema or something

@@ -135,6 +135,18 @@ def approximate_forecast_time(html, forecast_table):
     else:
         forecast_hour = 12
 
+    # Format the hour:
+    forecast_hour = str(forecast_hour)
+    if len(forecast_hour) == 1:
+        forecast_hour = '0' + forecast_hour
+    # Format the date:
+    if len(forecast_date) == 1:
+        forecast_date = '0' + forecast_date
+    # Format the month:
+    forecast_month = str(forecast_month)
+    if len(forecast_month) == 1:
+        forecast_month = '0' + forecast_month
+
     timestamp_str = \
         f'{forecast_year}-{forecast_month}-{forecast_date} {forecast_hour}'
     return pd.to_datetime(timestamp_str, format='%Y-%m-%d %H')
@@ -173,7 +185,7 @@ def find_wind_speed(forecast_table):
         (<\/text>)      # end of the container
         """, flags=re.VERBOSE
     )
-    return wind_speed_regex.search(forecast_table).group(2)
+    return int(wind_speed_regex.search(forecast_table).group(2))
 
 
 def find_snow(forecast_table):
@@ -188,9 +200,9 @@ def find_snow(forecast_table):
     )
     result = snow_regex.search(forecast_table).group(2)
     if result == "—":
-        return 0
+        return float(0.0)
     else:
-        return result
+        return float(result)
 
 
 def find_rain(forecast_table):
@@ -204,9 +216,9 @@ def find_rain(forecast_table):
     )
     result = rain_regex.search(forecast_table).group(2)
     if result == "—":
-        return 0
+        return float(0.0)
     else:
-        return result
+        return float(result)
 
 
 def find_max_temp(forecast_table):
@@ -222,7 +234,7 @@ def find_max_temp(forecast_table):
         (<\/div>)                                       # end of the container
         """, flags=re.VERBOSE
     )
-    return max_temp_regex.search(forecast_table).group(6)
+    return int(max_temp_regex.search(forecast_table).group(6))
 
 
 def find_min_temp(forecast_table):
@@ -238,7 +250,7 @@ def find_min_temp(forecast_table):
         (<\/div>)                                       # end of the container
         """, flags=re.VERBOSE
     )
-    return min_temp_regex.search(forecast_table).group(6)
+    return int(min_temp_regex.search(forecast_table).group(6))
 
 
 def find_chill(forecast_table):
@@ -254,7 +266,7 @@ def find_chill(forecast_table):
         (<\/div>)                                       # end of the container
         """, flags=re.VERBOSE
     )
-    return chill_regex.search(forecast_table).group(6)
+    return int(chill_regex.search(forecast_table).group(6))
 
 
 def find_freezing_level(forecast_table):
@@ -269,7 +281,7 @@ def find_freezing_level(forecast_table):
         (<\/div>)                                           # end of the container
         """, flags=re.VERBOSE
     )
-    return freezing_level_regex.search(forecast_table).group(5)
+    return int(freezing_level_regex.search(forecast_table).group(5))
 
 
 def find_cloud_base(forecast_table):
@@ -290,7 +302,7 @@ def find_cloud_base(forecast_table):
     if result == '':
         return None
     else:
-        return result
+        return int(result)
 
 
 def scrape_mtn_current_weather_at_elev(mtn_name, elev):
@@ -333,6 +345,7 @@ def scrape_current_weather(mtns_to_elevs):
     dfs = []
     for mtn_name in mtns_to_elevs.keys():
         for elev in mtns_to_elevs[mtn_name]:
+            print(f'Scraping weather for {mtn_name} at {elev}: ', end='')
             dfs.append(scrape_mtn_current_weather_at_elev(mtn_name, elev))
-            print(f'{mtn_name} at {elev}: complete.')
+            print('complete.')
     return pd.concat(dfs, ignore_index=True)

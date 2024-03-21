@@ -1,0 +1,1 @@
+{"mtn_name": "str", "elevation": "int64", "elev_feature": "str", "time_of_scrape": "datetime64[ns]", "time_issued": "datetime64[ns]", "forecast_time": "datetime64[ns]", "time_name": "str", "forecast_phrase": "str", "wind_speed": "str", "snow": "str", "rain": "str", "max_temp": "str", "min_temp": "str", "chill": "str", "freezing_level": "str", "cloud_base": "str"}
