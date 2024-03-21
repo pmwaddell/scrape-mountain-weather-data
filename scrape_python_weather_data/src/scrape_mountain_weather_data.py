@@ -1,6 +1,5 @@
 import re
 import pandas as pd
-import openpyxl
 from urllib.request import urlopen
 
 
@@ -100,6 +99,9 @@ def find_time_issued(html):
 def approximate_forecast_time(html, forecast_table):
     time_issued = find_time_issued(html)
     # TODO: in future we will need to reconcile the fact that this date applies to multiple cells and coordinate matching them up properly
+    # Note: a regex pattern must be used here that finds the right date even if
+    # it is not displayed in the cell, which happens when the first date is
+    # only one column wide in the table.
     forecast_date_regex = re.compile(
         fr"""
         (<td\ class="forecast-table-days__cell\ forecast-table__cell\ forecast-table__cell--day-even"\ colspan="[0-9]*"\ data-column-head=""\ data-date="[0-9][0-9][0-9][0-9]-[0-9][0-9]-)
@@ -334,17 +336,3 @@ def scrape_current_weather(mtns_to_elevs):
             dfs.append(scrape_mtn_current_weather_at_elev(mtn_name, elev))
             print(f'{mtn_name} at {elev}: complete.')
     return pd.concat(dfs, ignore_index=True)
-
-
-result_df = scrape_current_weather(
-    {
-        'Nanga-Parbat': [8125, 7500, 6500, 5500, 4500, 3500, 2500],
-        'Dhaulagiri': [8167, 7500, 6500, 5500, 4500, 3500, 2500, 1500]
-    }
-)
-# result_df = scrape_current_weather(
-#     {
-#         'Nanga-Parbat': [8125]
-#     }
-# )
-result_df.to_excel(f'FINAL.xlsx')
