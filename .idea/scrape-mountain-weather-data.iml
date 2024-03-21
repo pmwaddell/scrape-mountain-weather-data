@@ -2,6 +2,8 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/scrape_mountain_weather_data/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scrape_mountain_weather_data/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/scrape_python_weather_data/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scrape_python_weather_data/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
