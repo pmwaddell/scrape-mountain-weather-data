@@ -104,6 +104,10 @@ def find_time_issued(html):
     return pd.to_datetime(timestamp_str, format='%Y-%m-%d %H')
 
 
+def determine_forecast_status(l):
+    return ['actual'] + ['forecast'] * (l - 1)
+
+
 def approximate_forecast_time(html, forecast_table, find_full_table_data=False):
     forecast_date_regex = re.compile(
         r"""
@@ -126,6 +130,9 @@ def approximate_forecast_time(html, forecast_table, find_full_table_data=False):
                 time_issued,
                 time_name
             ))
+            # To match the "time names" and scraped dates up correctly, since
+            # there are up to three "time names" for each date, the date must
+            # advanced after each "night" appears.
             if time_name == 'night':
                 date_index += 1
         return result
@@ -398,8 +405,10 @@ def scrape_mtn_current_weather_at_elev(mtn_name, elev):
             'elev_feature': [format_strings(
                 find_elev_feature(mtn_name, elev, html))],
             'time_of_scrape': [get_time_of_scrape()],
-            'time_issued': [find_time_issued(html)],
-            'forecast_time': [approximate_forecast_time(html, forecast_table)],
+            'local_time_issued': [find_time_issued(html)],
+            'forecast_status': determine_forecast_status(1),
+            'forecast_local_time': [approximate_forecast_time(html,
+                                                              forecast_table)],
             'forecast_time_name': [find_time_name(forecast_table)],
             'forecast_phrase': [format_strings(
                 find_forecast_phrase(forecast_table))],
@@ -423,7 +432,6 @@ def scrape_mtn_full_forecast_table_at_elev(mtn_name, elev):
 
     wind_speed_lst = find_wind_speed(forecast_table, find_full_table_data=True)
     col_len = len(wind_speed_lst)
-    # TODO: add rain back 'rain': find_rain(forecast_table, find_full_table_data=True),
     df = pd.DataFrame(
         {
             'mtn_name': [format_strings(mtn_name)] * col_len,
@@ -431,8 +439,10 @@ def scrape_mtn_full_forecast_table_at_elev(mtn_name, elev):
             'elev_feature': [format_strings(
                 find_elev_feature(mtn_name, elev, html))] * col_len,
             'time_of_scrape': [get_time_of_scrape()] * col_len,
-            'time_issued': [find_time_issued(html)] * col_len,
-            'forecast_time': approximate_forecast_time(html, forecast_table, find_full_table_data=True),
+            'local_time_issued': [find_time_issued(html)] * col_len,
+            'forecast_status': determine_forecast_status(col_len),
+            'forecast_local_time': approximate_forecast_time(
+                html, forecast_table, find_full_table_data=True),
             'forecast_time_name': format_strings(
                 find_time_name(forecast_table, find_full_table_data=True)),
             'forecast_phrase': format_strings(
