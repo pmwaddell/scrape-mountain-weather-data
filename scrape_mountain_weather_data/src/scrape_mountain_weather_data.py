@@ -104,25 +104,53 @@ def find_time_issued(html):
     return pd.to_datetime(timestamp_str, format='%Y-%m-%d %H')
 
 
-def approximate_forecast_time(html, forecast_table):
-    time_issued = find_time_issued(html)
+def approximate_forecast_time(html, forecast_table, find_full_table_data=False):
     # TODO: in future we will need to reconcile the fact that this date applies to multiple cells and coordinate matching them up properly
     # Note: a regex pattern must be used here that finds the right date even if
     # it is not displayed in the cell, which happens when the first date is
     # only one column wide in the table.
     forecast_date_regex = re.compile(
         r"""
-        (<td\ class="forecast-table-days__cell\ forecast-table__cell\ forecast-table__cell--day-even"\ colspan="[0-9]*"\ data-column-head=""\ data-date="[0-9][0-9][0-9][0-9]-[0-9][0-9]-)
+        (<td\ class="forecast-table-days__cell\ forecast-table__cell\ forecast-table__cell--day-[a-z -=]*"\ colspan="[0-9]*"\ data-column-head=""\ data-date="[0-9][0-9][0-9][0-9]-[0-9][0-9]-)
         ([0-9][0-9])
         """, flags=re.VERBOSE
     )
-    forecast_date = forecast_date_regex.search(forecast_table).group(2)
+    # get forecast date/list of forecast dates
+    # get time name/list of time names
+    # extract the logic below into a function that takes a forecast date and time name and returns a DateTime
+    # do that logically to return either one DateTime or a list of DateTimes
 
     # TODO: for getting the entire table, we may need to split this section off and apply it to every element of the list
     # and just the one value for the current weather
     # however, we will need to handle the time_names too
     # in this case, we will pass that to the split off function I guess, find it up here instead or whatever
+    time_issued = find_time_issued(html)
+    if find_full_table_data:
+        forecast_dates = find_full_forecast_table_data(forecast_date_regex,
+                                                       forecast_table,
+                                                       2,
+                                                       str)
+        time_names = find_time_name(forecast_table, find_full_table_data=True)
+        result = []
+        date_index = 0
+        for time_name in time_names:
+            result.append(convert_table_forecast_time_to_datetime(
+                forecast_dates[date_index],
+                time_issued,
+                time_name
+            ))
+            if time_name == 'night':
+                date_index += 1
+        return result
+    else:
+        forecast_date = forecast_date_regex.search(forecast_table).group(2)
+        time_name = find_time_name(forecast_table)
+        return convert_table_forecast_time_to_datetime(
+            forecast_date, time_issued, time_name)
 
+
+def convert_table_forecast_time_to_datetime(
+        forecast_date, time_issued, time_name):
     # Determine correct month for the forecast:
     if int(forecast_date) == 1 and time_issued.day > 1:
         forecast_month = time_issued.month + 1
@@ -140,7 +168,6 @@ def approximate_forecast_time(html, forecast_table):
     # 7 AM, "PM" means 3 PM, and "night" means 11 PM.
     # This is arbitrary on my part, and is done to ease calculation.
 
-    time_name = find_time_name(forecast_table)
     if time_name == "AM":
         forecast_hour = 7
     elif time_name == "PM":
@@ -177,7 +204,8 @@ def find_time_name(forecast_table, find_full_table_data=False):
         """, flags=re.VERBOSE
     )
     if find_full_table_data:
-        return find_full_forecast_table_data(time_name_regex, forecast_table, 2, str)
+        return find_full_forecast_table_data(time_name_regex, forecast_table, 2,
+                                             str)
     return time_name_regex.search(forecast_table).group(2)
 
 
@@ -191,7 +219,8 @@ def find_forecast_phrase(forecast_table, find_full_table_data=False):
         """, flags=re.VERBOSE
     )
     if find_full_table_data:
-        return find_full_forecast_table_data(forecast_phrase_regex, forecast_table, 2, str)
+        return find_full_forecast_table_data(forecast_phrase_regex,
+                                             forecast_table, 2, str)
     return forecast_phrase_regex.search(forecast_table).group(2)
 
 
@@ -205,7 +234,8 @@ def find_wind_speed(forecast_table, find_full_table_data=False):
         """, flags=re.VERBOSE
     )
     if find_full_table_data:
-        return find_full_forecast_table_data(wind_speed_regex, forecast_table, 2, int)
+        return find_full_forecast_table_data(wind_speed_regex, forecast_table,
+                                             2, int)
     return int(wind_speed_regex.search(forecast_table).group(2))
 
 
@@ -220,7 +250,8 @@ def find_snow(forecast_table, find_full_table_data=False):
         """, flags=re.VERBOSE
     )
     if find_full_table_data:
-        snow_table_data = find_full_forecast_table_data(snow_regex,forecast_table, 2, str)
+        snow_table_data = find_full_forecast_table_data(snow_regex,
+                                                        forecast_table, 2, str)
         for i in range(len(snow_table_data)):
             if snow_table_data[i] == "—":
                 snow_table_data[i] = float(0.0)
@@ -245,7 +276,8 @@ def find_rain(forecast_table, find_full_table_data=False):
         """, flags=re.VERBOSE
     )
     if find_full_table_data:
-        rain_table_data = find_full_forecast_table_data(rain_regex, forecast_table, 2, str)
+        rain_table_data = find_full_forecast_table_data(rain_regex,
+                                                        forecast_table, 2, str)
         for i in range(len(rain_table_data)):
             if rain_table_data[i] == "—":
                 rain_table_data[i] = float(0.0)
@@ -274,7 +306,8 @@ def find_max_temp(forecast_table, find_full_table_data=False):
         """, flags=re.VERBOSE
     )
     if find_full_table_data:
-        return find_full_forecast_table_data(max_temp_regex, forecast_table, 6, int)
+        return find_full_forecast_table_data(max_temp_regex, forecast_table, 6,
+                                             int)
     return int(max_temp_regex.search(forecast_table).group(6))
 
 
@@ -292,7 +325,8 @@ def find_min_temp(forecast_table, find_full_table_data=False):
         """, flags=re.VERBOSE
     )
     if find_full_table_data:
-        return find_full_forecast_table_data(min_temp_regex, forecast_table, 6, int)
+        return find_full_forecast_table_data(min_temp_regex, forecast_table, 6,
+                                             int)
     return int(min_temp_regex.search(forecast_table).group(6))
 
 
@@ -310,7 +344,8 @@ def find_chill(forecast_table, find_full_table_data=False):
         """, flags=re.VERBOSE
     )
     if find_full_table_data:
-        return find_full_forecast_table_data(chill_regex, forecast_table, 6, int)
+        return find_full_forecast_table_data(chill_regex, forecast_table, 6,
+                                             int)
     return int(chill_regex.search(forecast_table).group(6))
 
 
@@ -327,7 +362,8 @@ def find_freezing_level(forecast_table, find_full_table_data=False):
         """, flags=re.VERBOSE
     )
     if find_full_table_data:
-        return find_full_forecast_table_data(freezing_level_regex, forecast_table, 5, int)
+        return find_full_forecast_table_data(freezing_level_regex,
+                                             forecast_table, 5, int)
     return int(freezing_level_regex.search(forecast_table).group(5))
 
 
@@ -346,7 +382,9 @@ def find_cloud_base(forecast_table, find_full_table_data=False):
         """, flags=re.VERBOSE
     )
     if find_full_table_data:
-        cloud_base_table_data = find_full_forecast_table_data(cloud_base_regex, forecast_table, 7, str)
+        cloud_base_table_data = find_full_forecast_table_data(cloud_base_regex,
+                                                              forecast_table, 7,
+                                                              str)
         for i in range(len(cloud_base_table_data)):
             if cloud_base_table_data[i] == '':
                 cloud_base_table_data[i] = None
@@ -375,7 +413,7 @@ def scrape_mtn_current_weather_at_elev(mtn_name, elev):
             'time_of_scrape': [get_time_of_scrape()],
             'time_issued': [find_time_issued(html)],
             'forecast_time': [approximate_forecast_time(html, forecast_table)],
-            'time_name': [find_time_name(forecast_table)],
+            'forecast_time_name': [find_time_name(forecast_table)],
             'forecast_phrase': [format_strings(
                 find_forecast_phrase(forecast_table))],
             'wind_speed': [find_wind_speed(forecast_table)],
@@ -407,7 +445,8 @@ def scrape_mtn_full_forecast_table_at_elev(mtn_name, elev):
                 find_elev_feature(mtn_name, elev, html))] * col_len,
             'time_of_scrape': [get_time_of_scrape()] * col_len,
             'time_issued': [find_time_issued(html)] * col_len,
-            'time_name': format_strings(
+            'forecast_time': approximate_forecast_time(html, forecast_table, find_full_table_data=True),
+            'forecast_time_name': format_strings(
                 find_time_name(forecast_table, find_full_table_data=True)),
             'forecast_phrase': format_strings(
                 find_forecast_phrase(forecast_table,
@@ -415,11 +454,15 @@ def scrape_mtn_full_forecast_table_at_elev(mtn_name, elev):
             'wind_speed': wind_speed_lst,
             'snow': find_snow(forecast_table, find_full_table_data=True),
             'rain': find_rain(forecast_table, find_full_table_data=True),
-            'max_temp': find_max_temp(forecast_table, find_full_table_data=True),
-            'min_temp': find_min_temp(forecast_table, find_full_table_data=True),
+            'max_temp': find_max_temp(forecast_table,
+                                      find_full_table_data=True),
+            'min_temp': find_min_temp(forecast_table,
+                                      find_full_table_data=True),
             'chill': find_chill(forecast_table, find_full_table_data=True),
-            'freezing_level': find_freezing_level(forecast_table, find_full_table_data=True),
-            'cloud_base': find_cloud_base(forecast_table, find_full_table_data=True)
+            'freezing_level': find_freezing_level(forecast_table,
+                                                  find_full_table_data=True),
+            'cloud_base': find_cloud_base(forecast_table,
+                                          find_full_table_data=True)
         }
     )
     return df
