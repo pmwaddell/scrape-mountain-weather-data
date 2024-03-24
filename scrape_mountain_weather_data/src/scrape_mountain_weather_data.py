@@ -117,6 +117,12 @@ def approximate_forecast_time(html, forecast_table):
         """, flags=re.VERBOSE
     )
     forecast_date = forecast_date_regex.search(forecast_table).group(2)
+
+    # TODO: for getting the entire table, we may need to split this section off and apply it to every element of the list
+    # and just the one value for the current weather
+    # however, we will need to handle the time_names too
+    # in this case, we will pass that to the split off function I guess, find it up here instead or whatever
+
     # Determine correct month for the forecast:
     if int(forecast_date) == 1 and time_issued.day > 1:
         forecast_month = time_issued.month + 1
@@ -133,6 +139,8 @@ def approximate_forecast_time(html, forecast_table):
     # Here, I am basing this value on the "time name", such that "AM" means
     # 7 AM, "PM" means 3 PM, and "night" means 11 PM.
     # This is arbitrary on my part, and is done to ease calculation.
+
+    # TODO: maybe change the regex so that it pulls both the date and time_name? or something, actually I'm not sure if that's any better...
     time_name = find_time_name(forecast_table)
     if time_name == "AM":
         forecast_hour = 7
@@ -160,15 +168,17 @@ def approximate_forecast_time(html, forecast_table):
     return pd.to_datetime(timestamp_str, format='%Y-%m-%d %H')
 
 
-def find_time_name(forecast_table):
+def find_time_name(forecast_table, find_full_table_data=False):
     time_name_regex = re.compile(
         r"""
-        (forecast-table__time"><span\ class="en">)  
+        (forecast-table__time.*?><span\ class="en">)  
         # above: text that comes right before the "time name"
         ([a-zA-Z]*)     # "time name" (i.e., "AM", "PM" or "night")
         (<\/span>)      # end of the container
         """, flags=re.VERBOSE
     )
+    if find_full_table_data:
+        return find_full_forecast_table_data(time_name_regex, forecast_table, 2, str)
     return time_name_regex.search(forecast_table).group(2)
 
 
@@ -398,6 +408,8 @@ def scrape_mtn_full_forecast_table_at_elev(mtn_name, elev):
                 find_elev_feature(mtn_name, elev, html))] * col_len,
             'time_of_scrape': [get_time_of_scrape()] * col_len,
             'time_issued': [find_time_issued(html)] * col_len,
+            'time_name': format_strings(
+                find_time_name(forecast_table, find_full_table_data=True)),
             'forecast_phrase': format_strings(
                 find_forecast_phrase(forecast_table,
                                      find_full_table_data=True)),
