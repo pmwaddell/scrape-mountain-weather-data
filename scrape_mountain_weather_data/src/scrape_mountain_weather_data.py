@@ -105,25 +105,12 @@ def find_time_issued(html):
 
 
 def approximate_forecast_time(html, forecast_table, find_full_table_data=False):
-    # TODO: in future we will need to reconcile the fact that this date applies to multiple cells and coordinate matching them up properly
-    # Note: a regex pattern must be used here that finds the right date even if
-    # it is not displayed in the cell, which happens when the first date is
-    # only one column wide in the table.
     forecast_date_regex = re.compile(
         r"""
         (<td\ class="forecast-table-days__cell\ forecast-table__cell\ forecast-table__cell--day-[a-z -=]*"\ colspan="[0-9]*"\ data-column-head=""\ data-date="[0-9][0-9][0-9][0-9]-[0-9][0-9]-)
         ([0-9][0-9])
         """, flags=re.VERBOSE
     )
-    # get forecast date/list of forecast dates
-    # get time name/list of time names
-    # extract the logic below into a function that takes a forecast date and time name and returns a DateTime
-    # do that logically to return either one DateTime or a list of DateTimes
-
-    # TODO: for getting the entire table, we may need to split this section off and apply it to every element of the list
-    # and just the one value for the current weather
-    # however, we will need to handle the time_names too
-    # in this case, we will pass that to the split off function I guess, find it up here instead or whatever
     time_issued = find_time_issued(html)
     if find_full_table_data:
         forecast_dates = find_full_forecast_table_data(forecast_date_regex,
