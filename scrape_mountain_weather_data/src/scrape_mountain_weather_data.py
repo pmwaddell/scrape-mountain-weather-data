@@ -407,8 +407,8 @@ def scrape_mtn_current_weather_at_elev(mtn_name, elev):
             'time_of_scrape': [get_time_of_scrape()],
             'local_time_issued': [find_time_issued(html)],
             'forecast_status': determine_forecast_status(1),
-            'forecast_local_time': [approximate_forecast_time(html,
-                                                              forecast_table)],
+            'local_time_of_forecast': [approximate_forecast_time(
+                html, forecast_table)],
             'forecast_time_name': [find_time_name(forecast_table)],
             'forecast_phrase': [format_strings(
                 find_forecast_phrase(forecast_table))],
@@ -441,7 +441,7 @@ def scrape_mtn_full_forecast_table_at_elev(mtn_name, elev):
             'time_of_scrape': [get_time_of_scrape()] * col_len,
             'local_time_issued': [find_time_issued(html)] * col_len,
             'forecast_status': determine_forecast_status(col_len),
-            'forecast_local_time': approximate_forecast_time(
+            'local_time_of_forecast': approximate_forecast_time(
                 html, forecast_table, find_full_table_data=True),
             'forecast_time_name': format_strings(
                 find_time_name(forecast_table, find_full_table_data=True)),
@@ -476,11 +476,15 @@ def format_strings(s):
         return s.lower().replace('-', '_').replace(' ', '_')
 
 
-def scrape_current_weather(mtns_to_elevs):
+def scrape_weather(mtns_to_elevs, full_forecast=False):
     dfs = []
     for mtn_name in mtns_to_elevs.keys():
         for elev in mtns_to_elevs[mtn_name]:
             print(f'Scraping weather for {mtn_name} at {elev}: ', end='')
-            dfs.append(scrape_mtn_current_weather_at_elev(mtn_name, elev))
+            if full_forecast:
+                dfs.append(
+                    scrape_mtn_full_forecast_table_at_elev(mtn_name, elev))
+            else:
+                dfs.append(scrape_mtn_current_weather_at_elev(mtn_name, elev))
             print('complete.')
     return pd.concat(dfs, ignore_index=True)

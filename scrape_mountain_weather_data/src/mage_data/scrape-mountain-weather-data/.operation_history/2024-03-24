@@ -1,0 +1,1 @@
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "live_to_postgres_copy"}, "timestamp": 1711301362, "user": null}

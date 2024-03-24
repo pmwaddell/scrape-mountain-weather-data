@@ -8,18 +8,18 @@ blocks:
   executor_type: local_python
   has_callback: false
   language: python
-  name: scrape_weather_data
+  name: scrape_live
   retry_config: null
   status: executed
   timeout: null
   type: data_loader
   upstream_blocks: []
-  uuid: scrape_weather_data
+  uuid: scrape_live
 - all_upstream_blocks_executed: true
   color: null
   configuration: {}
   downstream_blocks:
-  - export_weather_data_to_postgres
+  - live_to_postgres
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -30,24 +30,26 @@ blocks:
   timeout: null
   type: transformer
   upstream_blocks:
-  - scrape_weather_data
+  - scrape_live
   uuid: trivial_transform
 - all_upstream_blocks_executed: true
   color: null
-  configuration: {}
+  configuration:
+    file_source:
+      path: data_exporters/live_to_postgres.py
   downstream_blocks: []
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: export_weather_data_to_postgres
+  name: live_to_postgres
   retry_config: null
   status: executed
   timeout: null
   type: data_exporter
   upstream_blocks:
   - trivial_transform
-  uuid: export_weather_data_to_postgres
+  uuid: live_to_postgres
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
@@ -69,7 +71,7 @@ settings:
 spark_config: {}
 tags: []
 type: python
-updated_at: '2024-03-24 13:29:39'
+updated_at: '2024-03-24 17:53:41'
 uuid: live_to_postgres
 variables_dir: /home/src/mage_data/scrape-mountain-weather-data
 widgets: []
