@@ -56,7 +56,7 @@ def find_time_issued(html):
     result_split = result.split()
     # Format the hour:
     hour = int(result_split[0])
-    if result_split[1] == 'pm':
+    if result_split[1] == 'pm' and hour != 12:
         hour += 12
     hour = str(hour)
     if len(hour) == 1:
@@ -140,7 +140,6 @@ def approximate_forecast_time(html, forecast_table):
     # 7 AM, "PM" means 3 PM, and "night" means 11 PM.
     # This is arbitrary on my part, and is done to ease calculation.
 
-    # TODO: maybe change the regex so that it pulls both the date and time_name? or something, actually I'm not sure if that's any better...
     time_name = find_time_name(forecast_table)
     if time_name == "AM":
         forecast_hour = 7
