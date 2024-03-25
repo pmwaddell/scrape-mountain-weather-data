@@ -154,7 +154,6 @@ def convert_table_forecast_time_to_datetime(forecast_date, time_issued,
     # Here, I am basing this value on the "time name", such that "AM" means
     # 7 AM, "PM" means 3 PM, and "night" means 11 PM.
     # This is arbitrary on my part, and is done to ease calculation.
-
     if time_name == "AM":
         forecast_hour = 7
     elif time_name == "PM":
@@ -347,11 +346,6 @@ def find_cloud_bases(forecast_table):
     return cloud_base_table_data
 
 
-def scrape_mtn_current_weather_at_elev(mtn_name, elev):
-    df = scrape_mtn_full_forecast_table_at_elev(mtn_name, elev)
-    return df.iloc[:1]
-
-
 def scrape_mtn_full_forecast_table_at_elev(mtn_name, elev):
     url = f"http://www.mountain-forecast.com/peaks/{mtn_name}/forecasts/{elev}"
     html = urlopen(url).read().decode("utf-8")
@@ -385,6 +379,10 @@ def scrape_mtn_full_forecast_table_at_elev(mtn_name, elev):
         }
     )
     return df
+
+
+def scrape_mtn_current_weather_at_elev(mtn_name, elev):
+    return scrape_mtn_full_forecast_table_at_elev(mtn_name, elev).iloc[:1]
 
 
 def format_strings(s):
