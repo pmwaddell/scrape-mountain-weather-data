@@ -353,7 +353,7 @@ def scrape_mtn_full_forecast_table_at_elev(mtn_name, elev):
 
     wind_speed_lst = find_wind_speeds(forecast_table)
     col_len = len(wind_speed_lst)
-    df = pd.DataFrame(
+    return pd.DataFrame(
         {
             'mtn_name': [format_strings(mtn_name)] * col_len,
             'elevation': [elev] * col_len,
@@ -378,7 +378,6 @@ def scrape_mtn_full_forecast_table_at_elev(mtn_name, elev):
             'cloud_base': find_cloud_bases(forecast_table)
         }
     )
-    return df
 
 
 def scrape_mtn_current_weather_at_elev(mtn_name, elev):
