@@ -21,7 +21,8 @@ def load_data(*args, **kwargs):
             'Vinson-Massif': [4897, 4000, 3000, 2000, 1000, 0],
             'Mount-Washington-2': [1917, 1000],
             'Flattop': [1067, 500]
-        }
+        },
+        current_only=True
     )
 
 
