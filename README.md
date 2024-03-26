@@ -1,19 +1,18 @@
-How to install pgAgent in the container with pgAdmin:
+How to install pgAgent in the container with **Postgres**:
 
 see 
 https://karatejb.blogspot.com/2020/04/postgresql-pgagent-scheduling-agent.html
-and
-https://stackoverflow.com/questions/48001082/oci-runtime-exec-failed-exec-failed-executable-file-not-found-in-path
 
 To go into a docker container with bash:
 
-$ winpty docker exec -it -u=root src-pgadmin-1 //bin//sh
+$ winpty docker exec -it -u=root scrape-mountain-weather-data-postgres //bin//sh
 
-Since the image is running Alpine Linux, we need to use apk instead of apt-get: 
+Then run 
 
-$ apk update && apk add pgagent
+$ apt-get update && apt-get install pgagent
 
-Then, must go into Query tool in pgAdmin and execute:
+Then, must go into pgAdmin and under the tree, expand the data base and click "Extensions".
+Then, right click Create > Extension... and under Name type pgagent.
+Then simply refresh and there should be a place for pgAgent Jobs at the bottom. 
 
-CREATE EXTENSION pgagent IF NOT EXISTS;
-CREATE LANGUAGE plpgsql IF NOT EXISTS;
+Currently, the Dockerfile should be taking care of everything except the last part.
