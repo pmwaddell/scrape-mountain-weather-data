@@ -18,6 +18,9 @@ a "staging" table, and then consolidated into a "final" table containing only on
 "time issued" from mountain-forecast.com. These processes should be run automatically via pgAgent; if 
 needed, they can be run as manual queries by the user. These queries can be found in sql_queries_backup.txt.
 
+The pipelines postgres_to_csv and csv_to_postgres can be used to save the data in Postgres to a local .csv file
+found in src/forecast_data, and to load the data from a .csv file in src/forecast_data back into Postgres (under a 
+Schema called loaded_backups) respectively.
 
 _How to install pgAgent in the container with **Postgres**:_
 
@@ -38,6 +41,14 @@ $ apt-get update && apt-get install pgagent
 Next, you must connect pgAgent to the Postgres database, which can be done with the command:
 
 $ usr/bin/pgagent hostaddr=127.0.0.1 port=5432 dbname=postgres user=${POSTGRES_USER} password=${POSTGRES_PASSWORD}
+
+Apparently, the connection can be checked by 
+
+$ ps -ef |grep pgagent
+
+But you may need to install procps if this doesn't work first:
+
+$ apt-get update && apt-get install procps
 
 Then, must go into pgAdmin and under the tree, expand the data base and click "Extensions".
 Then, right click Create > Extension... and under Name type pgagent.
