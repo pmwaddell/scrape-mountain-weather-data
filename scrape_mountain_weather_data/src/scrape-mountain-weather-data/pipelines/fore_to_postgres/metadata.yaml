@@ -20,7 +20,6 @@ blocks:
   configuration: {}
   downstream_blocks:
   - fore_to_postgres
-  - test_split_postgres
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -62,8 +61,7 @@ blocks:
   status: executed
   timeout: null
   type: data_exporter
-  upstream_blocks:
-  - trivial_transform
+  upstream_blocks: []
   uuid: test_split_postgres
 cache_block_output_in_memory: false
 callbacks: []
@@ -86,7 +84,7 @@ settings:
 spark_config: {}
 tags: []
 type: python
-updated_at: '2024-03-26 23:06:22'
+updated_at: '2024-03-26T23:06:22+00:00'
 uuid: fore_to_postgres
 variables: {}
 variables_dir: /home/src/mage_data/scrape-mountain-weather-data
