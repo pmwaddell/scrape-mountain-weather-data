@@ -55,4 +55,6 @@ Then, right click Create > Extension... and under Name type pgagent.
 Then simply refresh and there should be a place for pgAgent Jobs at the bottom. 
 Make sure you see 'pgagent' and 'plpgsql' under Extensions as well.
 
-Currently, the Dockerfile should be taking care of everything except the last part.
+Currently, the Dockerfile should be taking care of everything except the last part. 
+However, it seems that the user may still need to manually go into the Docker container
+and restart pgAgent when firing it back up.
