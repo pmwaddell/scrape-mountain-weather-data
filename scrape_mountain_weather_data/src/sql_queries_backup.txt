@@ -38,3 +38,25 @@ FROM
 
 DELETE FROM forecast_data.test_scraped_forecasts_staging
 WHERE EXTRACT(DAY FROM NOW() - time_of_scrape) > 3
+
+
+-- check upsert, Nanga Parbat seems to always give 252 rows per update
+SELECT
+	COUNT(*),
+	local_time_issued
+FROM
+	forecast_data.scraped_forecasts_final
+WHERE
+	mtn_name = 'nanga_parbat'
+GROUP BY
+	local_time_issued
+ORDER BY
+	local_time_issued DESC
+
+
+-- check that old staging data is dropped
+SELECT
+	EXTRACT(DAY FROM NOW() - time_of_scrape),
+	COUNT(*)
+FROM forecast_data.scraped_forecasts_staging
+GROUP BY EXTRACT(DAY FROM NOW() - time_of_scrape)
