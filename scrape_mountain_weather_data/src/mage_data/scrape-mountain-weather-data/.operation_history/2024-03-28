@@ -1,1 +1,2 @@
 {"operation": "create", "resource": {"type": "pipeline", "uuid": "white_realm"}, "timestamp": 1711639955, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "natural_core"}, "timestamp": 1711649672, "user": null}
