@@ -1,6 +1,3 @@
-import re
-import pandas as pd
-from urllib.request import urlopen
 from scrape_mountain_weather_data import scrape_weather
 
 

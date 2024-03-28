@@ -48,21 +48,6 @@ blocks:
   upstream_blocks:
   - trivial_transform
   uuid: fore_to_postgres
-- all_upstream_blocks_executed: true
-  color: null
-  configuration: {}
-  downstream_blocks: []
-  executor_config: null
-  executor_type: local_python
-  has_callback: false
-  language: python
-  name: test_split_postgres
-  retry_config: null
-  status: executed
-  timeout: null
-  type: data_exporter
-  upstream_blocks: []
-  uuid: test_split_postgres
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
