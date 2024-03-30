@@ -16,7 +16,7 @@ def load_data_from_postgres(*args, **kwargs):
 
     Docs: https://docs.mage.ai/design/data-loading#postgresql
     """
-    query = 'SELECT * FROM forecast_data.scraped_forecasts_staging'  # Specify your SQL query here
+    query = 'SELECT * FROM forecast_data.scraped_forecasts_final'  # Specify your SQL query here
     config_path = path.join(get_repo_path(), 'io_config.yaml')
     config_profile = 'default'
 
