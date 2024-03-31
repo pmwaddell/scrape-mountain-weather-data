@@ -140,14 +140,14 @@ def approximate_forecast_times(html, forecast_table):
 
 def convert_table_forecast_time_to_datetime(forecast_date, time_issued,
                                             time_name):
-    if time_name == "AM":
-        forecast_hour = 7
-    elif time_name == "PM":
-        forecast_hour = 15
-    elif time_name == "night":
-        forecast_hour = 23
+    if time_name == 'AM':
+        forecast_hour = '07'
+    elif time_name == 'PM':
+        forecast_hour = '15'
+    elif time_name == 'night':
+        forecast_hour = '23'
     else:
-        forecast_hour = 12
+        forecast_hour = '12'
 
     timestamp_str = f'{forecast_date} {forecast_hour}'
     return pd.to_datetime(timestamp_str, format='%Y-%m-%d %H')

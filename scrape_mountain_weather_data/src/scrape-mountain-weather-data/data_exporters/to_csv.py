@@ -12,5 +12,5 @@ def export_data_to_file(df: DataFrame, **kwargs) -> None:
 
     Docs: https://docs.mage.ai/design/data-loading#fileio
     """
-    filepath = 'forecast_data/scraped_forecasts_final.csv'
+    filepath = 'forecast_data/scraped_forecasts_staging.csv'
     FileIO().export(df, filepath)
