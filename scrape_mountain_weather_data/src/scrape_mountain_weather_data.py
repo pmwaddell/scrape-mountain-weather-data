@@ -113,8 +113,8 @@ def determine_forecast_statuses(l):
 def approximate_forecast_times(html, forecast_table):
     forecast_date_regex = re.compile(
         r"""
-        (<td\ class="forecast-table-days__cell\ forecast-table__cell\ forecast-table__cell--day-[a-z -=]*"\ colspan="[0-9]*"\ data-column-head=""\ data-date="[0-9][0-9][0-9][0-9]-[0-9][0-9]-)
-        ([0-9][0-9])
+        (<td\ class="forecast-table-days__cell\ forecast-table__cell\ forecast-table__cell--day-[a-z -=]*"\ colspan="[0-9]*"\ data-column-head=""\ data-date=")
+        ([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])
         """, flags=re.VERBOSE
     )
     time_issued = find_time_issued(html)
@@ -140,22 +140,6 @@ def approximate_forecast_times(html, forecast_table):
 
 def convert_table_forecast_time_to_datetime(forecast_date, time_issued,
                                             time_name):
-    # Determine correct month for the forecast:
-    if int(forecast_date) == 1 and time_issued.day > 1:
-        forecast_month = time_issued.month + 1
-    else:
-        forecast_month = time_issued.month
-    # Determine correct year for the forecast:
-    # Here I am assuming that the dates in the cells will always be AHEAD of
-    # the time when the data was issued.
-    if time_issued.month == 12 and forecast_month == 1:
-        forecast_year = time_issued.year + 1
-    else:
-        forecast_year = time_issued.year
-    # Determine the correct hour for the forecast:
-    # Here, I am basing this value on the "time name", such that "AM" means
-    # 7 AM, "PM" means 3 PM, and "night" means 11 PM.
-    # This is arbitrary on my part, and is done to ease calculation.
     if time_name == "AM":
         forecast_hour = 7
     elif time_name == "PM":
@@ -165,20 +149,7 @@ def convert_table_forecast_time_to_datetime(forecast_date, time_issued,
     else:
         forecast_hour = 12
 
-    # Format the hour:
-    forecast_hour = str(forecast_hour)
-    if len(forecast_hour) == 1:
-        forecast_hour = '0' + forecast_hour
-    # Format the date:
-    if len(forecast_date) == 1:
-        forecast_date = '0' + forecast_date
-    # Format the month:
-    forecast_month = str(forecast_month)
-    if len(forecast_month) == 1:
-        forecast_month = '0' + forecast_month
-
-    timestamp_str = \
-        f'{forecast_year}-{forecast_month}-{forecast_date} {forecast_hour}'
+    timestamp_str = f'{forecast_date} {forecast_hour}'
     return pd.to_datetime(timestamp_str, format='%Y-%m-%d %H')
 
 
