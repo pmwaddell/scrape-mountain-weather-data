@@ -11,14 +11,24 @@ containers for Mage, PostgreSQL, and pgAdmin.
 
 Mage can be accessed from localhost:6789. Running the pipeline fore_to_postgres will scrape
 current weather data from the given mountains and elevations on mountain-forecast.com and put the resulting 
-data in Postgres.
+data in Postgres. You may need to edit the loader of this pipeline to create the table forecast_data.scraped_
+forecasts_final and populate it with initial data, if it doesn't already exist.
+
 
 The data in Postgres can be accessed via pgAdmin from localhost:8080. The data is at first put into
 a "staging" table, and then consolidated into a "final" table containing only one set of records to each
-"time issued" from mountain-forecast.com. These processes should be run automatically via pgAgent; if 
-needed, they can be run as manual queries by the user. These queries can be found in sql_queries_backup.txt.
+"time issued" from mountain-forecast.com. Data from the "staging" table is accumulated from each scrape 
+until it is 3 days old, at which point it is dropped. 
 
-The pipelines postgres_to_csv and csv_to_postgres can be used to save the data in Postgres to a local .csv file
+This upserting and dropping should be run automatically via pgAgent (see the tab for pgAgent Jobs at the bottom); 
+if needed, they can be run as manual queries by the user. These queries can be found in sql_queries_backup.txt.
+
+Note that when the scraped_forecasts_final table is first created, it needs to have the columns mtn_name, 
+elevation, local_time_issued and local_time_of_forecast set as primary keys. The command for this can also be found
+in sql_queries_backup.txt.
+
+The pipelines postgres_f_to_csv (for the "final" forecast table), postgres_s_to_csv (for the "staging" forecast table) 
+and csv_to_postgres can be used to save the data in Postgres to a local .csv file
 found in src/forecast_data, and to load the data from a .csv file in src/forecast_data back into Postgres (under a 
 Schema called loaded_backups) respectively.
 

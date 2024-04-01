@@ -3,18 +3,18 @@ blocks:
   color: null
   configuration: {}
   downstream_blocks:
-  - to_csv
+  - s_to_csv
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: load_final_postgres
+  name: load_s_postgres
   retry_config: null
   status: executed
   timeout: null
   type: data_loader
   upstream_blocks: []
-  uuid: load_final_postgres
+  uuid: load_s_postgres
 - all_upstream_blocks_executed: true
   color: null
   configuration: {}
@@ -23,14 +23,14 @@ blocks:
   executor_type: local_python
   has_callback: false
   language: python
-  name: to_csv
+  name: s_to_csv
   retry_config: null
   status: executed
   timeout: null
   type: data_exporter
   upstream_blocks:
-  - load_final_postgres
-  uuid: to_csv
+  - load_s_postgres
+  uuid: s_to_csv
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
@@ -52,7 +52,7 @@ settings:
 spark_config: {}
 tags: []
 type: python
-updated_at: '2024-03-31 21:27:46'
+updated_at: '2024-04-01T15:31:50+00:00'
 uuid: postgres_s_to_csv
 variables_dir: /home/src/mage_data/scrape-mountain-weather-data
 widgets: []

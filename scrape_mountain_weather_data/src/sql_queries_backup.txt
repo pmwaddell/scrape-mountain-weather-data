@@ -1,5 +1,9 @@
--- UPSERT staging table into final table:
+-- Set primary keys form scraped_forecasts_final
+ALTER TABLE forecast_data.scraped_forecasts_final
+ADD PRIMARY KEY (mtn_name, elevation, local_time_issued, local_time_of_forecast);
 
+
+-- UPSERT staging table into final table:
 WITH consolidated_staging AS (
 	SELECT DISTINCT ON (
 		mtn_name,
@@ -11,7 +15,7 @@ WITH consolidated_staging AS (
 	FROM forecast_data.scraped_forecasts_staging
 	ORDER BY mtn_name, elevation, local_time_issued, local_time_of_forecast,
 		time_of_scrape DESC
-)
+);
 
 INSERT INTO forecast_data.scraped_forecasts_final
 	SELECT * FROM consolidated_staging
@@ -29,18 +33,18 @@ DO UPDATE SET
 	cloud_base = EXCLUDED.cloud_base;
 
 
--- get time diff and delete older data
+-- Get time diff and delete older data
 SELECT
 	time_of_scrape,
 	EXTRACT(DAY FROM NOW() - time_of_scrape) AS diff
 FROM
-	forecast_data.test_scraped_forecasts_staging
+	forecast_data.test_scraped_forecasts_staging;
 
 DELETE FROM forecast_data.test_scraped_forecasts_staging
-WHERE EXTRACT(DAY FROM NOW() - time_of_scrape) > 3
+WHERE EXTRACT(DAY FROM NOW() - time_of_scrape) > 3;
 
 
--- check upsert, Nanga Parbat seems to always give 252 rows per update
+-- Check upsert, Nanga Parbat seems to always give 252 rows per update
 SELECT
 	COUNT(*),
 	local_time_issued
@@ -51,12 +55,12 @@ WHERE
 GROUP BY
 	local_time_issued
 ORDER BY
-	local_time_issued DESC
+	local_time_issued DESC;
 
 
--- check that old staging data is dropped
+-- Check that old staging data is dropped
 SELECT
 	EXTRACT(DAY FROM NOW() - time_of_scrape),
 	COUNT(*)
 FROM forecast_data.scraped_forecasts_staging
-GROUP BY EXTRACT(DAY FROM NOW() - time_of_scrape)
+GROUP BY EXTRACT(DAY FROM NOW() - time_of_scrape);
