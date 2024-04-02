@@ -25,7 +25,7 @@ if needed, they can be run as manual queries by the user. These queries can be f
 
 Note that when the scraped_forecasts_final table is first created, it needs to have the columns mtn_name, 
 elevation, local_time_issued and local_time_of_forecast set as primary keys. The command for this can also be found
-in sql_queries_backup.txt.
+in sql_queries_backup.txt. Note also that if Autocommit is off, you may need to add COMMIT; after these queries.
 
 The pipelines postgres_f_to_csv (for the "final" forecast table), postgres_s_to_csv (for the "staging" forecast table) 
 and csv_to_postgres can be used to save the data in Postgres to a local .csv file
