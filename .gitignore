@@ -1,2 +1,4 @@
 /scrape_mountain_weather_data/misc
 /scrape_mountain_weather_data/src/personal-gcp.json
+/scrape_mountain_weather_data/data/postgres_data
+.logs
