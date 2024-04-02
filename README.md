@@ -32,6 +32,10 @@ and csv_to_postgres can be used to save the data in Postgres to a local .csv fil
 found in src/forecast_data, and to load the data from a .csv file in src/forecast_data back into Postgres (under a 
 Schema called loaded_backups) respectively.
 
+To send data to BQ, you need to set up a GCP account and project. Then go into the project and set up a 
+Service Account as project owner. Create a Key for this account, download it and place it into the directory
+designated folder in docker-compose.yaml (/Documents/secrets/personal-gcp.json by default seems to work).
+
 _How to install pgAgent in the container with **Postgres**:_
 
 see 
