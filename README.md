@@ -1,6 +1,7 @@
 Note: if you are cloning this repo, run create_postgres_directories.sh using BASH before doing anything else. 
 This is needed because PostgresQL requires the presence of some empty directories under postgres_data, and because 
-they are empty they are not captured by Git. 
+they are empty they are not captured by Git. As of 4/2/24, I no longer track the postgres_data directory
+with git, so this may no longer be necessary.
 
 Note that I admittedly haven't really tested this, but running it should at least ensure that the same file 
 structure under postgres_data is recapitulated. 
