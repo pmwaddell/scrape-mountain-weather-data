@@ -1,4 +1,6 @@
--- Set primary keys form scraped_forecasts_final
+-- NOTE: jobs may have to end with COMMIT; as well!!
+
+-- Set primary keys for scraped_forecasts_final
 ALTER TABLE forecast_data.scraped_forecasts_final
 ADD PRIMARY KEY (mtn_name, elevation, local_time_issued, local_time_of_forecast);
 
@@ -64,3 +66,27 @@ SELECT
 	COUNT(*)
 FROM forecast_data.scraped_forecasts_staging
 GROUP BY EXTRACT(DAY FROM NOW() - time_of_scrape);
+
+
+
+-- Set primary keys for sun_final
+ALTER TABLE sun_data.sun_final
+ADD PRIMARY KEY (mtn_name, _date);
+
+
+-- Upsert sun data from sun_staging to sun_final
+WITH consolidated_staging AS (
+	SELECT DISTINCT ON (
+		mtn_name,
+		_date
+	)
+	*
+	FROM sun_data.sun_staging
+	ORDER BY mtn_name, _date DESC
+)
+
+INSERT INTO sun_data.sun_final
+	SELECT * FROM consolidated_staging
+ON CONFLICT
+	(mtn_name, _date)
+DO NOTHING;

@@ -61,7 +61,7 @@ def find_sun_event(html, event, date, time_zone):
 
     total_mins = 60 * hours + mins
     date = date + datetime.timedelta(minutes=total_mins)
-    return date.tz_localize(time_zone)
+    return str(date.tz_localize(time_zone))
 
 
 def find_sun_data(csv_name):
