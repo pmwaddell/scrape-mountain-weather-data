@@ -71,22 +71,30 @@ GROUP BY EXTRACT(DAY FROM NOW() - time_of_scrape);
 
 -- Set primary keys for sun_final
 ALTER TABLE sun_data.sun_final
-ADD PRIMARY KEY (mtn_name, _date);
+ADD PRIMARY KEY (mtn_name, scrape_date);
 
 
 -- Upsert sun data from sun_staging to sun_final
 WITH consolidated_staging AS (
 	SELECT DISTINCT ON (
 		mtn_name,
-		_date
+		scrape_date
 	)
 	*
 	FROM sun_data.sun_staging
-	ORDER BY mtn_name, _date DESC
+	ORDER BY mtn_name, scrape_date DESC
 )
 
 INSERT INTO sun_data.sun_final
 	SELECT * FROM consolidated_staging
 ON CONFLICT
-	(mtn_name, _date)
+	(mtn_name, scrape_date)
 DO NOTHING;
+
+
+-- Upsert which adds total_daylight column also includes:
+ALTER TABLE sun_data.sun_final
+ADD COLUMN IF NOT EXISTS total_daylight interval;
+
+UPDATE sun_data.sun_final
+SET total_daylight = sunset_time - sunrise_time;

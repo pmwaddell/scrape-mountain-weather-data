@@ -54,7 +54,7 @@ settings:
 spark_config: {}
 tags: []
 type: python
-updated_at: '2024-04-03T23:24:23+00:00'
+updated_at: '2024-04-04 01:56:13'
 uuid: sun_to_bq
 variables_dir: /home/src/mage_data/scrape-mountain-weather-data
 widgets: []

@@ -55,13 +55,12 @@ def find_sun_event(html, event, date, time_zone):
     mins = int(sun_event_result.group(2))
     am_pm = sun_event_result.group(3)
 
-    # Format the hours:
     if am_pm == 'pm' and hours != 12:
         hours += 12
 
     total_mins = 60 * hours + mins
     date = date + datetime.timedelta(minutes=total_mins)
-    return str(date.tz_localize(time_zone))
+    return date
 
 
 def find_sun_data(csv_name):
@@ -75,7 +74,7 @@ def find_sun_data(csv_name):
         sunrises.append(find_sun_event(html, 'rise', date, row['time_zone']))
         sunsets.append(find_sun_event(html, 'set', date, row['time_zone']))
 
-    df.insert(4, 'date', dates)
+    df.insert(4, 'scrape_date', dates)
     df.insert(5, 'sunrise_time', sunrises)
     df.insert(6, 'sunset_time', sunsets)
     return df
