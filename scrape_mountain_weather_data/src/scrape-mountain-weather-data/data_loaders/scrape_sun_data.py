@@ -13,7 +13,7 @@ def load_data(*args, **kwargs):
         Anything (e.g. data frame, dictionary, array, int, str, etc.)
     """
     from scrape_sun_data import find_sun_data
-    return find_sun_data('mtns_for_timeanddate.csv')
+    return find_sun_data('sun_data/mtns_for_timeanddate.csv')
 
 
 @test
