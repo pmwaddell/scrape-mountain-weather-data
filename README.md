@@ -57,7 +57,7 @@ Next, you must connect pgAgent to the Postgres database, which can be done with 
 
 $ usr/bin/pgagent hostaddr=127.0.0.1 port=5432 dbname=postgres user=${POSTGRES_USER} password=${POSTGRES_PASSWORD}
 
-Apparently, the connection can be checked by 
+The connection can be checked by 
 
 $ ps -ef |grep pgagent
 
