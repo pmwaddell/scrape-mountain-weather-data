@@ -3,3 +3,5 @@
 /scrape_mountain_weather_data/data/postgres_data
 .logs
 .variables
+
+/scrape_mountain_weather_data/src/forecast_data/scraped_forecasts_final.csv
