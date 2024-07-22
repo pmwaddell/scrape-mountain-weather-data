@@ -7,6 +7,20 @@ from urllib.request import urlopen
 
 
 def find_date(html):
+    """
+    Determines the current date at the location of the mountain.
+
+    Parameters
+    ----------
+    html : str
+        String containing the html contents of the page from timeanddate.com
+        which contains the sunrise and sunset data for this mountain.
+
+    Returns
+    -------
+    Timestamp
+        Timestamp object representing the current date at the mountain.
+    """
     date_regex = re.compile(
         r"""
         <th>Current\ Time:\ <\/th><td\ id=smct>
@@ -43,6 +57,27 @@ def find_date(html):
 
 
 def find_sun_event(html, event, date):
+    """
+    Finds the time of sunrise or sunset at the mountain on the current date.
+
+    Parameters
+    ----------
+    html : str
+        String containing the html contents of the page from timeanddate.com
+        which contains the sunrise and sunset data for this mountain.
+
+    event  : str
+        String of 'rise' or 'set' for sunrise or sunset.
+
+    date : Timestamp
+        Timestamp representing the current date at the mountain.
+
+    Returns
+    -------
+    Timestamp
+        Timestamp object representing the time of sunrise or sunset at the
+        mountain on the current date.
+    """
     sun_event_regex = re.compile(
         rf"""
         Sun{event}\ Today:\ <\/th><td>
@@ -88,6 +123,23 @@ def find_sun_event(html, event, date):
 
 
 def find_sun_data(csv_name):
+    """
+    Scrapes data from timeanddate.com to find the time of sunrise and sunset
+    for the curent date and returns this in a dataframe.
+
+    Parameters
+    ----------
+    csv_name : str
+        Name of or path to the csv file containing columns for the name of the
+        desired mountains, the url extension for timeanddate.com (@...), the
+        time zone where the mountain is found, and the UTC offset for it.
+
+    Returns
+    -------
+    Dataframe
+        Dataframe containing columns: mtn_name, timeanddate_url_end, time_zone,
+        UTC_diff, scrape_date, sunrise_time, and sunset_time.
+    """
     df = pd.read_csv(csv_name)
     dates, sunrises, sunsets = [], [], []
     for index, row in df.iterrows():
