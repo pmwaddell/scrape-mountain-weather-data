@@ -378,5 +378,5 @@ def scrape_weather(mtns_to_elevs, current_only=False):
                 dfs.append(
                     scrape_mtn_full_forecast_table_at_elev(mtn_name, elev))
             print('complete.')
-            time.sleep(8)
+            time.sleep(5)
     return pd.concat(dfs, ignore_index=True)
