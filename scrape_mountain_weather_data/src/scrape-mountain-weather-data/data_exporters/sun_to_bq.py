@@ -11,10 +11,7 @@ if 'data_exporter' not in globals():
 @data_exporter
 def export_data_to_big_query(df: DataFrame, **kwargs) -> None:
     """
-    Template for exporting data to a BigQuery warehouse.
-    Specify your configuration settings in 'io_config.yaml'.
-
-    Docs: https://docs.mage.ai/design/data-loading#bigquery
+    Exports the final sunrise and sunset data to a table in BQ.
     """
     table_id = 'sun_data.sun_and_time_zone_data'
     config_path = path.join(get_repo_path(), 'io_config.yaml')

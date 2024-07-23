@@ -7,10 +7,7 @@ if 'test' not in globals():
 @data_loader
 def load_data(*args, **kwargs):
     """
-    Template code for loading data from any source.
-
-    Returns:
-        Anything (e.g. data frame, dictionary, array, int, str, etc.)
+    Scrape sunrise and sunset data from timeanddate.com.
     """
     from scrape_sun_data import find_sun_data
     return find_sun_data('sun_data/mtns_for_timeanddate.csv')
@@ -19,6 +16,6 @@ def load_data(*args, **kwargs):
 @test
 def test_output(output, *args) -> None:
     """
-    Template code for testing the output of the block.
+    Checks that the output is not None
     """
     assert output is not None, 'The output is undefined'

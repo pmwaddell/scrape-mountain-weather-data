@@ -8,9 +8,7 @@ if 'data_exporter' not in globals():
 @data_exporter
 def export_data_to_file(df: DataFrame, **kwargs) -> None:
     """
-    Template for exporting data to filesystem.
-
-    Docs: https://docs.mage.ai/design/data-loading#fileio
+    Saves the final sunrise and sunset data as a csv file.
     """
     filepath = 'sun_data/sun_final.csv'
     FileIO().export(df, filepath)
