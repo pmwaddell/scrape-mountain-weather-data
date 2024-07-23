@@ -1,0 +1,8 @@
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "silent_healer"}, "timestamp": 1721749587, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "bq_fore_f_to_parq_copy"}, "timestamp": 1721750235, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "bq_fore_f_to_parq_copy"}, "timestamp": 1721750549, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "bq_sun_f_to_parq_copy"}, "timestamp": 1721759990, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "phenomenal_field"}, "timestamp": 1721761133, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "parq_fore_s_to_bq_copy"}, "timestamp": 1721761915, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "superlative_snowflake"}, "timestamp": 1721762439, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "celestial_star"}, "timestamp": 1721762636, "user": null}
