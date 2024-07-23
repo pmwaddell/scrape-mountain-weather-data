@@ -273,9 +273,7 @@ def approximate_forecast_times(html, forecast_table):
     date_index = 0
     for time_name in time_names:
         result.append(convert_table_forecast_time_to_datetime(
-            forecast_dates[date_index],
-            time_issued,
-            time_name
+            forecast_dates[date_index], time_name
         ))
         # To match the "time names" and scraped dates up correctly, since
         # there are up to three "time names" for each date, the date must
