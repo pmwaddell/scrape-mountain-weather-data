@@ -15,12 +15,12 @@ __maintainer__ = "Peter Waddell"
 __email__ = "pmwaddell9@gmail.com"
 __status__ = "Prototype"
 
-import datetime
 import re
 import time
+import datetime
+from urllib.request import urlopen
 
 import pandas as pd
-from urllib.request import urlopen
 
 
 def find_date(html):

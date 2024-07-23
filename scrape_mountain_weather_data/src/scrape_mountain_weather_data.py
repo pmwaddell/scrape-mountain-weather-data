@@ -18,8 +18,10 @@ __status__ = "Prototype"
 
 import re
 import time
-import pandas as pd
 from urllib.request import urlopen
+import json
+
+import pandas as pd
 
 
 def find_forecast_table(html):
@@ -724,7 +726,7 @@ def format_strings(s):
         return s.lower().replace('-', '_').replace(' ', '_')
 
 
-def scrape_weather(mtns_to_elevs, current_only=False):
+def scrape_weather(json_name, current_only=False):
     """
     Scrapes data from mountain-forecast.com to find forecast data for the
     specified elevations of the specified mountains. Both current weather data
@@ -732,8 +734,9 @@ def scrape_weather(mtns_to_elevs, current_only=False):
 
     Parameters
     ----------
-    mtns_to_elevs : dict
-        Dictionary mapping the names (entered the way they appear in the urls
+    json_name : str
+        String of the filename or path for the JSON file containing a
+        dictionary mapping the names (entered the way they appear in the urls
         for their pages on mountain-forecast.com) to elevations, indicating
         which pages will be scraped.
 
@@ -747,6 +750,9 @@ def scrape_weather(mtns_to_elevs, current_only=False):
         Dataframe containing columns: mtn_name, timeanddate_url_end, time_zone,
         UTC_diff, scrape_date, sunrise_time, and sunset_time.
     """
+    with open(json_name) as json_file:
+        mtns_to_elevs = json.load(json_file)
+
     dfs = []
     for mtn_name in mtns_to_elevs.keys():
         for elev in mtns_to_elevs[mtn_name]:
