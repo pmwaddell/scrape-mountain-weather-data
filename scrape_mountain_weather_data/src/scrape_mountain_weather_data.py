@@ -1,3 +1,21 @@
+#!/usr/bin/env python3
+"""
+A script which scrapes weather forecast data from mountain-forecast.com.
+
+Given a map of mountain names to elevations, data from mountain-forecast.com is
+scraped and compiled into a Dataframe, containing temperature, wind speed,
+rain, snow data and more. Both the current conditions on the mountain and
+forecasts of future weather can be obtained.
+"""
+__author__ = "Peter Waddell"
+__copyright__ = "Copyright 2024"
+__credits__ = ["Peter Waddell"]
+__version__ = "0.0.1"
+__date__ = "2024/07/22"
+__maintainer__ = "Peter Waddell"
+__email__ = "pmwaddell9@gmail.com"
+__status__ = "Prototype"
+
 import re
 import time
 import pandas as pd
@@ -5,6 +23,21 @@ from urllib.request import urlopen
 
 
 def find_forecast_table(html):
+    """
+    Extracts the html corresponding to the forecast table out of the html of a
+    page from mountain-forecast.com.
+
+    Parameters
+    ----------
+    html : str
+        When true, only the current weather data is scraped, so no forecasted
+        data is included.
+
+    Returns
+    -------
+    str
+        String containing the html for the forecast table.
+    """
     forecast_table_regex = re.compile(
         r"""
         (<div\ class="js-vis-forecast\ forecast-table"\ data-scroll-fade=""\ id="forecast-table">)  
@@ -17,6 +50,32 @@ def find_forecast_table(html):
 
 
 def find_full_forecast_table_data(regex, forecast_table, data_group, data_type):
+    """
+    Searches the full forecast table for one kind of data, given a regular
+    expression.
+
+    Parameters
+    ----------
+    regex : str
+        Regular expression used to search the table.
+
+    forecast_table : str
+        String containing the html for the forecast table.
+
+    data_group : int
+        Indicates which "group" of the Match contains the desired data, based
+        on the regular expression.
+
+    data_type
+        Class of the data being extracted from the table, used to cast it from
+        the string which the Match returns.
+
+    Returns
+    -------
+    List
+        List containing the sequence of values for the specified type of data,
+        as they appear in the table left-to-right.
+    """
     findall_result = re.findall(regex, forecast_table)
     all_table_values = []
     for i in range(len(findall_result)):
@@ -25,6 +84,32 @@ def find_full_forecast_table_data(regex, forecast_table, data_group, data_type):
 
 
 def find_elev_feature(mtn_name, elev, html):
+    """
+    On mountain-forecast.com, certain elevations are given designations. The
+    lowest is called the "base" and the highest is the "peak". In addition, in
+    some cases a middle elevation is also called "mid". I refer to these as
+    "elevation features", and this function finds the feature on the given
+    page, if there is one.
+
+    Parameters
+    ----------
+    mtn_name : str
+        String of the name of the mountain, as it appears in the url on
+        mountain-forecast.com.
+
+    elev : int
+        Represents the elevation on the mountain, based on the pages on
+        mountain-forecast.com.
+
+    html : str
+        String containing the html for the page on mountain-forecast.com
+
+    Returns
+    -------
+    str
+        String of the elevation feature ("base", "mid", or "peak") if it is
+        present for this mountain at the given elevation, None otherwise.
+    """
     elev_feature_regex = re.compile(
         fr"""
         (<a\ class="forecast-table-elevation__link\ forecast-table-elevation__link--is-active"\ data-elevation-level="{elev}"\ data-elevation-group="[a-z]*"\ href="/peaks/{mtn_name}/forecasts/{elev}">)
@@ -41,10 +126,33 @@ def find_elev_feature(mtn_name, elev, html):
 
 
 def get_time_of_scrape():
+    """
+    Gets the time of scrape, aka the current time.
+
+    Returns
+    -------
+    Timestamp
+        Current timestamp.
+    """
     return pd.Timestamp.now().round('min')
 
 
 def find_time_issued(html):
+    """
+    On mountain-forecast.com, each forecast table has a time when it is said to
+    have been issued. This function translates this time into the proper time
+    and date.
+
+    Parameters
+    ----------
+    html : str
+        String containing the html of the page on mountain-forecast.com.
+
+    Returns
+    -------
+    Datetime
+        Datetime corresponding to the time the forecast table was issued.
+    """
     time_issued_regex = re.compile(
         r"""
         (<span\ class="issued__time">)  # class for issued time
@@ -106,10 +214,50 @@ def find_time_issued(html):
 
 
 def determine_forecast_statuses(l):
+    """
+    In the forecast table, the first (i.e. leftmost) cell contains the current,
+    or "actual", data (meaning, presumably it represents the weather on the
+    mountain at that time) and the remainder are forecasts for times in the
+    future. So, this function returns a list of strings with length equal to
+    the number of cells in the table. The first is 'actual' and the remainder
+    are 'forecast', so they correspond to the cells in the table.
+
+    Parameters
+    ----------
+    l : int
+        Equal to the number of cells in a row of the forecast table.
+
+    Returns
+    -------
+    List
+        List of strings with length l, the first being 'actual' and the
+        remainder being 'forecast', corresponding to the cells in the table.
+    """
     return ['actual'] + ['forecast'] * (l - 1)
 
 
 def approximate_forecast_times(html, forecast_table):
+    """
+    On mountain-forecast.com, each date is subdivided into "AM", "PM" and
+    "night". For the purposes of this study, I have arbitrarily pegged these
+    "time names" to 7:00, 15:00 and 23:00 respectively. This function gives the
+    sequences of these times, derived from the sequence of dates and time names
+    in the forecast table.
+
+    Parameters
+    ----------
+    html : str
+        String of the html of the page on mountain-forecast.com.
+
+    forecast_table : str
+        String of the html for the forecast table on mountain-forecast.com
+
+    Returns
+    -------
+    List
+        List of Datetimes corresponding to the forecasts in the table, based on
+        the date and "time name".
+    """
     forecast_date_regex = re.compile(
         r"""
         (<td\ class="forecast-table-days__cell\ forecast-table__cell\ forecast-table__cell--day-[a-z -=]*"\ colspan="[0-9]*"\ data-column-head=""\ data-date=")
@@ -137,8 +285,27 @@ def approximate_forecast_times(html, forecast_table):
     return result
 
 
-def convert_table_forecast_time_to_datetime(forecast_date, time_issued,
-                                            time_name):
+def convert_table_forecast_time_to_datetime(forecast_date, time_name):
+    """
+    Considering that each day in the forecast is subdivided vaguely into three
+    ("AM", "PM", and "night"), for the purposes of this investigation I have
+    arbitrarily pegged each of these to a specific time: AM is 7:00, PM is
+    15:00, and night is 23:00. This function gives Timestamp corresponding to
+    the given time name.
+
+    Parameters
+    ----------
+    forecast_date : str
+        String representing the date of the forecast.
+
+    time_name : str
+        The "time name" of the forecast ("AM", "PM" or "night).
+
+    Returns
+    -------
+    Datetime
+        Approximated datetime of the forecast.
+    """
     if time_name == 'AM':
         forecast_hour = '07'
     elif time_name == 'PM':
@@ -153,6 +320,23 @@ def convert_table_forecast_time_to_datetime(forecast_date, time_issued,
 
 
 def find_time_names(forecast_table):
+    """
+    The forecast tables on mountain-forecast.com are divided by days, which
+    themselves are subdivided into "AM", "PM", and "night", which I refer to as
+    "forecast time names". This function gives the sequence of time names in
+    the table.
+
+    Parameters
+    ----------
+    forecast_table : str
+        String containing the html of the forecast table.
+
+    Returns
+    -------
+    List
+        List containing the "time names" from the forecast table (i.e., "AM",
+        "PM" or "night").
+    """
     time_name_regex = re.compile(
         r"""
         (forecast-table__time.*?><span\ class="en">)  
@@ -166,6 +350,21 @@ def find_time_names(forecast_table):
 
 
 def find_forecast_phrases(forecast_table):
+    """
+    Each forecast in the table has a short phrase that describes the weather
+    conditions briefly, i.e. 'clear', 'some clouds', 'mod. snow', etc. This
+    function gives the sequence of forecast phrases in the table.
+
+    Parameters
+    ----------
+    forecast_table : str
+        String containing the html of the forecast table.
+
+    Returns
+    -------
+    List
+        List containing the forecast phrases from the forecast table.
+    """
     forecast_phrase_regex = re.compile(
         r"""
         (<span\ class="forecast-table__phrase\ forecast-table__phrase--en">)
@@ -179,6 +378,20 @@ def find_forecast_phrases(forecast_table):
 
 
 def find_wind_speeds(forecast_table):
+    """
+    This function gives the sequence of forecasted wind speeds in the table,
+    in km/h.
+
+    Parameters
+    ----------
+    forecast_table : str
+        String containing the html of the forecast table.
+
+    Returns
+    -------
+    List
+        List containing the forecasted wind speeds from the forecast table.
+    """
     wind_speed_regex = re.compile(
         r"""
         (<text\ class="wind-icon__val"\ fill="rgb\(.*?\)"\ text-anchor="middle"\ x="0"\ y="5">)
@@ -192,6 +405,19 @@ def find_wind_speeds(forecast_table):
 
 
 def find_snow(forecast_table):
+    """
+    This function gives the sequence of snow forecasts in the table, in cm.
+
+    Parameters
+    ----------
+    forecast_table : str
+        String containing the html of the forecast table.
+
+    Returns
+    -------
+    List
+        List containing the snow forecasts from the forecast table.
+    """
     snow_regex = re.compile(
         r"""
         (<div\ class="snow-amount".*?><span.*?>)
@@ -212,6 +438,19 @@ def find_snow(forecast_table):
 
 
 def find_rain(forecast_table):
+    """
+    This function gives the sequence of rain forecasts in the table, in mm.
+
+    Parameters
+    ----------
+    forecast_table : str
+        String containing the html of the forecast table.
+
+    Returns
+    -------
+    List
+        List containing the rain forecasts from the forecast table.
+    """
     rain_regex = re.compile(
         r"""
         (<div\ class="rain-amount\ forecast-table__container\ forecast-table__container--rain.*?><span.*?>)
@@ -231,6 +470,19 @@ def find_rain(forecast_table):
 
 
 def find_max_temps(forecast_table):
+    """
+    This function gives the sequence of max. temp. forecasts in the table, in C.
+
+    Parameters
+    ----------
+    forecast_table : str
+        String containing the html of the forecast table.
+
+    Returns
+    -------
+    List
+        List containing the max. temp. forecasts from the forecast table.
+    """
     max_temp_regex = re.compile(
         r"""
         (<div\ class="forecast-table__container\ forecast-table__container--stretch\ forecast-table__container--max)
@@ -247,6 +499,19 @@ def find_max_temps(forecast_table):
 
 
 def find_min_temps(forecast_table):
+    """
+    This function gives the sequence of min. temp. forecasts in the table, in C.
+
+    Parameters
+    ----------
+    forecast_table : str
+        String containing the html of the forecast table.
+
+    Returns
+    -------
+    List
+        List containing the min. temp. forecasts from the forecast table.
+    """
     min_temp_regex = re.compile(
         r"""
         (<div\ class="forecast-table__container\ forecast-table__container--stretch\ forecast-table__container--min)
@@ -263,6 +528,19 @@ def find_min_temps(forecast_table):
 
 
 def find_chills(forecast_table):
+    """
+    This function gives the sequence of chill forecasts in the table, in C.
+
+    Parameters
+    ----------
+    forecast_table : str
+        String containing the html of the forecast table.
+
+    Returns
+    -------
+    List
+        List containing the chill forecasts from the forecast table.
+    """
     chill_regex = re.compile(
         r"""
         (<div\ class="forecast-table__container\ forecast-table__container--stretch)
@@ -279,6 +557,20 @@ def find_chills(forecast_table):
 
 
 def find_freezing_levels(forecast_table):
+    """
+    This function gives the sequence of freezing level forecasts in the table,
+    in m.
+
+    Parameters
+    ----------
+    forecast_table : str
+        String containing the html of the forecast table.
+
+    Returns
+    -------
+    List
+        List containing the freezing level forecasts from the forecast table.
+    """
     freezing_level_regex = re.compile(
         r"""
         (<div\ class="forecast-table__container\ forecast-table__container--blue)
@@ -295,6 +587,20 @@ def find_freezing_levels(forecast_table):
 
 
 def find_cloud_bases(forecast_table):
+    """
+    This function gives the sequence of cloud base forecasts in the table,
+    in m.
+
+    Parameters
+    ----------
+    forecast_table : str
+        String containing the html of the forecast table.
+
+    Returns
+    -------
+    List
+        List containing the cloud base forecasts from the forecast table.
+    """
     cloud_base_regex = re.compile(
         r"""
         (<div\ class="forecast-table__container\ forecast-table__container--cloud-base)
@@ -319,6 +625,26 @@ def find_cloud_bases(forecast_table):
 
 
 def scrape_mtn_full_forecast_table_at_elev(mtn_name, elev):
+    """
+    Scrapes data from mountain-forecast.com to find forecast data from a
+    specific page, i.e. a mountain at one elevation.
+
+    Parameters
+    ----------
+    mtn_name : str
+        Name of the desired mountain, formatted the way it is in the url
+        on mountain-forecast.com.
+
+    elev : int
+        Indicates which elevation should be scraped, based on the available
+        data from mountain-forecast.com.
+
+    Returns
+    -------
+    Dataframe
+        Dataframe containing weather forecast data from the mountain at this
+        elevation.
+    """
     url = f"http://www.mountain-forecast.com/peaks/{mtn_name}/forecasts/{elev}"
     html = urlopen(url).read().decode("utf-8")
     forecast_table = find_forecast_table(html)
@@ -353,10 +679,43 @@ def scrape_mtn_full_forecast_table_at_elev(mtn_name, elev):
 
 
 def scrape_mtn_current_weather_at_elev(mtn_name, elev):
+    """
+    Gets the current, "actual" weather for a particular mountain at a
+    particular elevation from mountain-forecast.com.
+
+    Parameters
+    ----------
+    mtn_name : str
+        String of the name of the desired mountain, formatted according to how
+        it appears in the url on mountain-forecast.com.
+
+    elev : int
+        Indicates the desired elevation for the scrape, based on the available
+        options on mountain-forecast.com.
+
+    Returns
+    -------
+    Dataframe
+        Dataframe containing the current, "actual" weather for the given
+        mountain at the given elevation.
+    """
     return scrape_mtn_full_forecast_table_at_elev(mtn_name, elev).iloc[:1]
 
 
 def format_strings(s):
+    """
+    Formats strings for the dataframe.
+
+    Parameters
+    ----------
+    s : str
+        String to be formatted.
+
+    Returns
+    -------
+    str
+        Formatted string.
+    """
     if s is None:
         return None
     if type(s) is list:
@@ -368,6 +727,28 @@ def format_strings(s):
 
 
 def scrape_weather(mtns_to_elevs, current_only=False):
+    """
+    Scrapes data from mountain-forecast.com to find forecast data for the
+    specified elevations of the specified mountains. Both current weather data
+    and forecasted data can be scraped.
+
+    Parameters
+    ----------
+    mtns_to_elevs : dict
+        Dictionary mapping the names (entered the way they appear in the urls
+        for their pages on mountain-forecast.com) to elevations, indicating
+        which pages will be scraped.
+
+    current_only : bool
+        When true, only the current weather data is scraped, so no forecasted
+        data is included.
+
+    Returns
+    -------
+    Dataframe
+        Dataframe containing columns: mtn_name, timeanddate_url_end, time_zone,
+        UTC_diff, scrape_date, sunrise_time, and sunset_time.
+    """
     dfs = []
     for mtn_name in mtns_to_elevs.keys():
         for elev in mtns_to_elevs[mtn_name]:

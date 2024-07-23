@@ -1,3 +1,20 @@
+#!/usr/bin/env python3
+"""
+A script which scrapes sunrise and sunset data from timeanddate.com.
+
+Given a csv file containing mountain names, url parts for timeanddate.com,
+time zones, and UTC time differences, this script scrapes the current sunrise
+and sunset data from the site and compiles it into a Dataframe.
+"""
+__author__ = "Peter Waddell"
+__copyright__ = "Copyright 2024"
+__credits__ = ["Peter Waddell"]
+__version__ = "0.0.1"
+__date__ = "2024/07/22"
+__maintainer__ = "Peter Waddell"
+__email__ = "pmwaddell9@gmail.com"
+__status__ = "Prototype"
+
 import datetime
 import re
 import time
