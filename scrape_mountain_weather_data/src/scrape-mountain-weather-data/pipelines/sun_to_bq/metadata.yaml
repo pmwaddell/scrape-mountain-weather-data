@@ -3,7 +3,7 @@ blocks:
   color: null
   configuration: {}
   downstream_blocks:
-  - sun_to_bq_staging
+  - sun_to_bq_s
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -23,14 +23,14 @@ blocks:
   executor_type: local_python
   has_callback: false
   language: python
-  name: sun_to_bq_staging
+  name: sun_to_bq_s
   retry_config: null
   status: updated
   timeout: null
   type: data_exporter
   upstream_blocks:
   - scrape_sun_data
-  uuid: sun_to_bq_staging
+  uuid: sun_to_bq_s
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
@@ -52,7 +52,7 @@ settings:
 spark_config: {}
 tags: []
 type: python
-updated_at: '2024-07-23T15:00:31+00:00'
+updated_at: '2024-07-23 15:27:25'
 uuid: sun_to_bq
 variables_dir: /home/src/mage_data/scrape-mountain-weather-data
 widgets: []

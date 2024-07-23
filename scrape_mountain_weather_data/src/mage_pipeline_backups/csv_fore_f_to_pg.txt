@@ -1,7 +1,6 @@
-sun_to_postgres:
+-- LOADER load_csv_fore_f
 
-LOADER scrape_sun_data:
-
+from mage_ai.io.file import FileIO
 if 'data_loader' not in globals():
     from mage_ai.data_preparation.decorators import data_loader
 if 'test' not in globals():
@@ -9,27 +8,25 @@ if 'test' not in globals():
 
 
 @data_loader
-def load_data(*args, **kwargs):
+def load_data_from_file(*args, **kwargs):
     """
-    Template code for loading data from any source.
+    Loads the backed up final forecast data from the csv file.
+    """
+    filepath = 'forecast_data/scraped_forecasts_final.csv'
 
-    Returns:
-        Anything (e.g. data frame, dictionary, array, int, str, etc.)
-    """
-    from scrape_sun_data import find_sun_data
-    return find_sun_data('sun_data/mtns_for_timeanddate.csv')
+    return FileIO().load(filepath)
 
 
 @test
 def test_output(output, *args) -> None:
     """
-    Template code for testing the output of the block.
+    Checks that the output is not None.
     """
     assert output is not None, 'The output is undefined'
 
 
 
-EXPORTER sun_to_postgres
+-- EXPORTER csv_fore_f_to_pg
 
 from mage_ai.settings.repo import get_repo_path
 from mage_ai.io.config import ConfigFileLoader
@@ -44,13 +41,10 @@ if 'data_exporter' not in globals():
 @data_exporter
 def export_data_to_postgres(df: DataFrame, **kwargs) -> None:
     """
-    Template for exporting data to a PostgreSQL database.
-    Specify your configuration settings in 'io_config.yaml'.
-
-    Docs: https://docs.mage.ai/design/data-loading#postgresql
+    Exports final forecast data from the backed up csv file to an appropriate table in Postgres
     """
-    schema_name = 'sun_data'  # Specify the name of the schema to export data to
-    table_name = 'sun_staging'  # Specify the name of the table to export data to
+    schema_name = 'loaded_backups'  # Specify the name of the schema to export data to
+    table_name = 'scraped_forecasts_final_backup'  # Specify the name of the table to export data to
     config_path = path.join(get_repo_path(), 'io_config.yaml')
     config_profile = 'default'
 
@@ -60,5 +54,5 @@ def export_data_to_postgres(df: DataFrame, **kwargs) -> None:
             schema_name,
             table_name,
             index=False,  # Specifies whether to include index in exported table
-            if_exists='append',  # Specify resolution policy if table name already exists
+            if_exists='replace',  # Specify resolution policy if table name already exists
         )

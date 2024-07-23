@@ -3,20 +3,20 @@ blocks:
   color: null
   configuration:
     file_source:
-      path: data_loaders/load_fore_f_pg.py
+      path: data_loaders/load_pg_fore_f.py
   downstream_blocks:
   - fore_f_to_csv
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: load_fore_f_pg
+  name: load_pg_fore_f
   retry_config: null
   status: not_executed
   timeout: null
   type: data_loader
   upstream_blocks: []
-  uuid: load_fore_f_pg
+  uuid: load_pg_fore_f
 - all_upstream_blocks_executed: false
   color: null
   configuration:
@@ -33,7 +33,7 @@ blocks:
   timeout: null
   type: data_exporter
   upstream_blocks:
-  - load_fore_f_pg
+  - load_pg_fore_f
   uuid: fore_f_to_csv
 cache_block_output_in_memory: false
 callbacks: []
@@ -56,7 +56,7 @@ settings:
 spark_config: {}
 tags: []
 type: python
-updated_at: '2024-07-23 15:08:30'
+updated_at: '2024-07-23T15:08:30+00:00'
 uuid: pg_fore_f_to_csv
 variables_dir: /home/src/mage_data/scrape-mountain-weather-data
 widgets: []

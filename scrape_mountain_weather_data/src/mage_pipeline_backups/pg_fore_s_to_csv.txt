@@ -1,6 +1,4 @@
-sun_f_to_csv:
-
-LOADER load_sun_f_post
+-- LOADER load_pg_fore_s
 
 from mage_ai.settings.repo import get_repo_path
 from mage_ai.io.config import ConfigFileLoader
@@ -20,7 +18,7 @@ def load_data_from_postgres(*args, **kwargs):
 
     Docs: https://docs.mage.ai/design/data-loading#postgresql
     """
-    query = 'SELECT * FROM sun_data.sun_final'  # Specify your SQL query here
+    query = 'SELECT * FROM forecast_data.scraped_forecasts_staging'  # Specify your SQL query here
     config_path = path.join(get_repo_path(), 'io_config.yaml')
     config_profile = 'default'
 
@@ -37,7 +35,7 @@ def test_output(output, *args) -> None:
 
 
 
-EXPORTER sun_f_to_csv
+-- EXPORTER fore_s_to_csv
 
 from mage_ai.io.file import FileIO
 from pandas import DataFrame
@@ -49,9 +47,7 @@ if 'data_exporter' not in globals():
 @data_exporter
 def export_data_to_file(df: DataFrame, **kwargs) -> None:
     """
-    Template for exporting data to filesystem.
-
-    Docs: https://docs.mage.ai/design/data-loading#fileio
+    Saves the current forecast staging
     """
-    filepath = 'sun_data/sun_final.csv'
+    filepath = 'forecast_data/scraped_forecasts_staging.csv'
     FileIO().export(df, filepath)
