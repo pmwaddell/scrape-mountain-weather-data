@@ -5,4 +5,7 @@
 .variables
 
 /scrape_mountain_weather_data/src/forecast_data/scraped_forecasts_final.csv
+/scrape_mountain_weather_data/src/forecast_data/scraped_forecasts_final_old.csv
+/scrape_mountain_weather_data/src/forecast_data/scraped_forecasts_staging.csv
+/scrape_mountain_weather_data/src/forecast_data/scraped_forecasts_staging_old.csv
 /scrape_mountain_weather_data/src/forecast_data/forecasts_final.parquet
