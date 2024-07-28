@@ -1,0 +1,508 @@
+check_forecast_upsert
+-- Check that the upsert worked
+-- This query should return a count of 252 for each distinct local_time_issued
+SELECT
+	COUNT(*),
+	local_time_issued
+FROM
+	`mountain-weather-data.mountain_weather_data.forecasts`
+WHERE
+	mtn_name = 'nanga_parbat'
+GROUP BY
+	local_time_issued
+ORDER BY
+	local_time_issued DESC;
+
+
+
+check_forecast_upsert
+SELECT
+  COUNT(*),
+  mtn_name,
+  scrape_date
+FROM `mountain-weather-data.sun_data.sun_and_time_zone_data`
+GROUP BY mtn_name, scrape_date
+ORDER BY mtn_name, scrape_date
+
+
+
+check_old_fore_staging
+DELETE FROM `mountain-weather-data.mountain_weather_data.staging`
+WHERE
+EXTRACT(DAY FROM CURRENT_DATETIME() - time_of_scrape) > 2;
+
+
+
+check_old_sun_staging
+DELETE FROM `mountain-weather-data.sun_data.sun_and_time_zone_staging`
+WHERE
+EXTRACT(DAY FROM CURRENT_DATETIME() - scrape_date) > 2;
+
+
+
+scratchwork_for_predictions
+WITH actual_chill AS (
+  SELECT chill AS actual_chill
+  FROM `mountain-weather-data.prod.fact_forecasts`
+  WHERE mtn_name = 'mont_blanc'
+  AND elevation = 4000
+  AND local_time_of_forecast = '2024-04-09T07:00:00'
+  AND forecast_status = 'actual'
+  GROUP BY chill
+)
+
+SELECT
+  forecast_status,
+  local_time_issued,
+  local_time_of_forecast,
+  local_time_of_forecast - local_time_issued as forecast_time_diff,
+  chill,
+  chill - ac.actual_chill AS chill_diff
+FROM `mountain-weather-data.prod.fact_forecasts`
+JOIN actual_chill AS ac ON 1=1
+WHERE mtn_name = 'mont_blanc' AND elevation = 4000
+AND local_time_of_forecast = '2024-04-09T07:00:00'
+ORDER BY forecast_status ASC, local_time_issued DESC
+LIMIT 50
+
+
+
+see_two_actuals
+WITH cte AS (
+  SELECT
+  COUNT(*) AS c,
+  mtn_name,
+  elevation,
+  local_time_of_forecast,
+  forecast_status
+FROM `mountain-weather-data.mountain_weather_data.forecasts`
+GROUP BY
+  mtn_name,
+  elevation,
+  local_time_of_forecast,
+  forecast_status
+)
+SELECT * FROM cte WHERE c > 1 AND forecast_status = 'actual'
+
+
+
+see_two_actuals_w_diff_data
+SELECT
+  *
+FROM `mountain-weather-data.mountain_weather_data.forecasts`
+WHERE forecast_status = 'actual' AND mtn_name = 'imja_tse' AND local_time_of_forecast = '2024-06-24T07:00:00' AND elevation = 6183
+ORDER BY
+  mtn_name,
+  elevation,
+  local_time_of_forecast,
+  forecast_status
+
+
+
+set_keys_dbt_fact_forecasts
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.fact_forecasts`
+ADD PRIMARY KEY (
+  fact_forecasts_key
+  ) NOT ENFORCED;
+
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.fact_forecasts`
+ADD FOREIGN KEY (
+  region_group_key
+  ) REFERENCES
+  `mountain-weather-data.dbt_pwaddell.bridge_region_group` (region_group_key)
+  NOT ENFORCED;
+
+
+
+set_keys_dim_geography
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.dim_geography`
+ADD PRIMARY KEY (
+  geography_key
+  ) NOT ENFORCED;
+
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.dim_geography`
+ADD FOREIGN KEY (
+  region_group_key
+  ) REFERENCES
+  `mountain-weather-data.dbt_pwaddell.bridge_region_group` (region_group_key)
+  NOT ENFORCED;
+
+
+
+set_keys_fact_forecasts_actual
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.fact_forecasts_actual`
+ADD PRIMARY KEY (
+  fact_forecasts_key
+  ) NOT ENFORCED;
+
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.fact_forecasts_actual`
+ADD FOREIGN KEY (
+  region_group_key
+  ) REFERENCES
+  `mountain-weather-data.dbt_pwaddell.bridge_region_group` (region_group_key)
+  NOT ENFORCED;
+
+
+
+
+set_keys_forecast_predictions_may_2024
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.forecast_predictions_may_2024`
+ADD PRIMARY KEY (
+  fact_forecasts_key
+  ) NOT ENFORCED;
+
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.forecast_predictions_may_2024`
+ADD FOREIGN KEY (
+  region_group_key
+  ) REFERENCES
+  `mountain-weather-data.dbt_pwaddell.bridge_region_group` (region_group_key)
+  NOT ENFORCED;
+
+
+
+set_pk_average_morning_chill_june_2024
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.avg_morning_chill_june_2024`
+ADD PRIMARY KEY (
+  mtn_name, elevation
+  ) NOT ENFORCED;
+
+
+
+
+set_pk_bridge_region_group
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.bridge_region_group`
+ADD PRIMARY KEY (
+  region_group_key
+  ) NOT ENFORCED;
+
+
+
+set_keys_dim_geography
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.dim_mf_features`
+ADD PRIMARY KEY (
+  mf_features_key
+  ) NOT ENFORCED;
+
+
+
+set_keys_fact_forecasts_actual
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.fact_forecasts_actual`
+ADD PRIMARY KEY (
+  fact_forecasts_key
+  ) NOT ENFORCED;
+
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.fact_forecasts_actual`
+ADD FOREIGN KEY (
+  region_group_key
+  ) REFERENCES
+  `mountain-weather-data.dbt_pwaddell.bridge_region_group` (region_group_key)
+  NOT ENFORCED;
+
+
+
+set_keys_forecasts_predictions_may_2024
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.forecast_predictions_may_2024`
+ADD PRIMARY KEY (
+  fact_forecasts_key
+  ) NOT ENFORCED;
+
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.forecast_predictions_may_2024`
+ADD FOREIGN KEY (
+  region_group_key
+  ) REFERENCES
+  `mountain-weather-data.dbt_pwaddell.bridge_region_group` (region_group_key)
+  NOT ENFORCED;
+
+
+
+set_pk_average_morning_chill_june_2024
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.avg_morning_chill_june_2024`
+ADD PRIMARY KEY (
+  mtn_name, elevation
+  ) NOT ENFORCED;
+
+
+
+set_pk_bridge_region_group
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.bridge_region_group`
+ADD PRIMARY KEY (
+  region_group_key
+  ) NOT ENFORCED;
+
+
+
+set_pk_dim_mf_features
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.dim_mf_features`
+ADD PRIMARY KEY (
+  mf_features_key
+  ) NOT ENFORCED;
+
+
+
+set_pk_dim_mountaineering
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.dim_mountaineering`
+ADD PRIMARY KEY (
+  mountaineering_key
+  ) NOT ENFORCED;
+
+
+
+set_pk_dim_region
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.dim_region`
+ADD PRIMARY KEY (
+  region_key
+  ) NOT ENFORCED;
+
+
+
+set_pk_dim_sun
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.dim_sun`
+ADD PRIMARY KEY (
+  sun_key
+  ) NOT ENFORCED;
+
+
+
+set_pk_dim_time_zone
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.dim_time_zone`
+ADD PRIMARY KEY (
+  time_zone_key
+  ) NOT ENFORCED;
+
+
+
+set_pk_dim_topography
+ALTER TABLE `mountain-weather-data.dbt_pwaddell.dim_time_zone`
+ADD PRIMARY KEY (
+  time_zone_key
+  ) NOT ENFORCED;
+
+
+
+set_pk_fore
+ALTER TABLE `mountain-weather-data.mountain_weather_data.forecasts`
+ADD PRIMARY KEY (
+  mtn_name,
+  elevation,
+  local_time_issued,
+  local_time_of_forecast
+  ) NOT ENFORCED;
+
+
+
+set_pk_min_max_temp_diff_apr_2024
+ALTER TABLE `mountain-weather-data.mountain_weather_data.forecasts`
+ADD PRIMARY KEY (
+  mtn_name,
+  elevation,
+  local_time_issued,
+  local_time_of_forecast
+  ) NOT ENFORCED;
+
+
+
+set_pk_sun
+ALTER TABLE `mountain-weather-data.sun_data.sun_and_time_zone_data`
+ADD PRIMARY KEY (mtn_name, scrape_date) NOT ENFORCED;
+
+
+
+upsert_forecasts
+-- UPSERT staging table into final table:
+MERGE INTO `mountain-weather-data.mountain_weather_data.forecasts` AS f
+
+USING (
+	WITH ranked_forecasts AS (
+		SELECT DISTINCT
+		*,
+		RANK() OVER(
+			PARTITION BY
+				mtn_name, elevation, local_time_issued, local_time_of_forecast
+			ORDER BY time_of_scrape
+			) AS scrape_time_rank
+		FROM `mountain-weather-data.mountain_weather_data.staging`
+		ORDER BY mtn_name, elevation, local_time_issued, local_time_of_forecast
+	)
+	SELECT * FROM ranked_forecasts
+	WHERE scrape_time_rank = 1
+) AS c
+
+ON
+	f.mtn_name = c.mtn_name AND
+	f.elevation = c.elevation AND
+	f.local_time_issued = c.local_time_issued AND
+	f.local_time_of_forecast = c.local_time_of_forecast
+WHEN MATCHED THEN
+	UPDATE SET
+		f.time_of_scrape = c.time_of_scrape,
+		f.forecast_phrase = c.forecast_phrase,
+		f.wind_speed = c.wind_speed,
+		f.snow = c.snow,
+		f.rain = c.rain,
+		f.max_temp = c.max_temp,
+		f.chill = c.chill,
+		f.freezing_level = c.freezing_level,
+		f.cloud_base = c.cloud_base
+WHEN NOT MATCHED THEN
+	INSERT (
+		mtn_name,
+		elevation,
+		elev_feature,
+		time_of_scrape,
+		local_time_issued,
+		forecast_status,
+		local_time_of_forecast,
+		forecast_time_name,
+		forecast_phrase,
+		wind_speed,
+		snow,
+		rain,
+		max_temp,
+		min_temp,
+		chill,
+		freezing_level,
+		cloud_base
+	)
+	VALUES (
+		c.mtn_name,
+		c.elevation,
+		c.elev_feature,
+		c.time_of_scrape,
+		c.local_time_issued,
+		c.forecast_status,
+		c.local_time_of_forecast,
+		c.forecast_time_name,
+		c.forecast_phrase,
+		c.wind_speed,
+		c.snow,
+		c.rain,
+		c.max_temp,
+		c.min_temp,
+		c.chill,
+		c.freezing_level,
+		c.cloud_base
+	)
+
+
+
+upsert_forecasts_hourly
+-- UPSERT staging table into final table:
+MERGE INTO `mountain-weather-data.mountain_weather_data.forecasts` AS f
+
+USING (
+	WITH ranked_forecasts AS (
+		SELECT DISTINCT
+		*,
+		RANK() OVER(
+			PARTITION BY
+				mtn_name, elevation, local_time_issued, local_time_of_forecast
+			ORDER BY time_of_scrape) AS scrape_time_rank
+		FROM `mountain-weather-data.mountain_weather_data.staging`
+		ORDER BY mtn_name, elevation, local_time_issued, local_time_of_forecast
+	)
+	SELECT * FROM ranked_forecasts
+	WHERE scrape_time_rank = 1
+) AS c
+
+ON
+	f.mtn_name = c.mtn_name AND
+	f.elevation = c.elevation AND
+	f.local_time_issued = c.local_time_issued AND
+	f.local_time_of_forecast = c.local_time_of_forecast
+WHEN MATCHED THEN
+	UPDATE SET
+		f.time_of_scrape = c.time_of_scrape,
+		f.forecast_phrase = c.forecast_phrase,
+		f.wind_speed = c.wind_speed,
+		f.snow = c.snow,
+		f.rain = c.rain,
+		f.max_temp = c.max_temp,
+		f.chill = c.chill,
+		f.freezing_level = c.freezing_level,
+		f.cloud_base = c.cloud_base
+WHEN NOT MATCHED THEN
+	INSERT (
+		mtn_name,
+		elevation,
+		elev_feature,
+		time_of_scrape,
+		local_time_issued,
+		forecast_status,
+		local_time_of_forecast,
+		forecast_time_name,
+		forecast_phrase,
+		wind_speed,
+		snow,
+		rain,
+		max_temp,
+		min_temp,
+		chill,
+		freezing_level,
+		cloud_base
+	)
+	VALUES (
+		c.mtn_name,
+		c.elevation,
+		c.elev_feature,
+		c.time_of_scrape,
+		c.local_time_issued,
+		c.forecast_status,
+		c.local_time_of_forecast,
+		c.forecast_time_name,
+		c.forecast_phrase,
+		c.wind_speed,
+		c.snow,
+		c.rain,
+		c.max_temp,
+		c.min_temp,
+		c.chill,
+		c.freezing_level,
+		c.cloud_base
+	)
+
+
+
+upsert_sun_data
+MERGE INTO `mountain-weather-data.sun_data.sun_and_time_zone_data` AS s
+USING (
+		SELECT DISTINCT
+			mtn_name,
+			time_zone,
+			timeanddate_url_end,
+			UTC_diff,
+			scrape_date,
+			sunrise_time,
+			sunset_time
+	FROM `mountain-weather-data.sun_data.sun_and_time_zone_staging`
+	ORDER BY mtn_name, scrape_date DESC
+) AS c
+
+ON
+	s.mtn_name = c.mtn_name AND
+	s.scrape_date = c.scrape_date
+WHEN NOT MATCHED THEN
+INSERT (
+		mtn_name,
+		time_zone,
+		timeanddate_url_end,
+		UTC_diff,
+		scrape_date,
+		sunrise_time,
+		sunset_time
+)
+VALUES (
+		c.mtn_name,
+		c.time_zone,
+		c.timeanddate_url_end,
+		c.UTC_diff,
+		c.scrape_date,
+		c.sunrise_time,
+		c.sunset_time
+);
+
+ALTER TABLE `mountain-weather-data.sun_data.sun_and_time_zone_data`
+ADD COLUMN IF NOT EXISTS total_daylight interval;
+
+UPDATE `mountain-weather-data.sun_data.sun_and_time_zone_data`
+SET total_daylight = sunset_time - sunrise_time
+WHERE 1=1;
