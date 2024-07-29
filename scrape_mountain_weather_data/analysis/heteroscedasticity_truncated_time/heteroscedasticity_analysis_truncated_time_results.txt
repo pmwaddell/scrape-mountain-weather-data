@@ -1,0 +1,256 @@
+avg_abs_chill_diff_v_time_diff_k2_6000m_may2024.csv
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.815
+Model:                            OLS   Adj. R-squared:                  0.812
+Method:                 Least Squares   F-statistic:                     264.4
+Date:                Mon, 29 Jul 2024   Prob (F-statistic):           1.16e-23
+Time:                        17:50:53   Log-Likelihood:                 2.7106
+No. Observations:                  62   AIC:                            -1.421
+Df Residuals:                      60   BIC:                             2.833
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      0.6983      0.061     11.398      0.000       0.576       0.821
+x              0.0136      0.001     16.261      0.000       0.012       0.015
+==============================================================================
+Omnibus:                        8.151   Durbin-Watson:                   1.779
+Prob(Omnibus):                  0.017   Jarque-Bera (JB):                7.931
+Skew:                          -0.656   Prob(JB):                       0.0190
+Kurtosis:                       4.162   Cond. No.                         150.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+Breusch-Pagan test results:[('Lagrange multiplier statistic', 0.43493422728420894), ('p-value', 0.509577677269716), ('f-value', 0.4238776213346879), ('f p-value', 0.5174942702906604)]
+
+
+
+
+avg_abs_min_temp_diff_v_time_diff_k2_6000m_may2024.csv
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.900
+Model:                            OLS   Adj. R-squared:                  0.898
+Method:                 Least Squares   F-statistic:                     537.7
+Date:                Mon, 29 Jul 2024   Prob (F-statistic):           1.21e-31
+Time:                        17:50:53   Log-Likelihood:                 47.547
+No. Observations:                  62   AIC:                            -91.09
+Df Residuals:                      60   BIC:                            -86.84
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      0.1568      0.030      5.275      0.000       0.097       0.216
+x              0.0094      0.000     23.188      0.000       0.009       0.010
+==============================================================================
+Omnibus:                        1.136   Durbin-Watson:                   2.141
+Prob(Omnibus):                  0.567   Jarque-Bera (JB):                0.507
+Skew:                          -0.112   Prob(JB):                        0.776
+Kurtosis:                       3.382   Cond. No.                         150.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+Breusch-Pagan test results:[('Lagrange multiplier statistic', 2.2466228098476835), ('p-value', 0.1339063622036358), ('f-value', 2.2558953975420892), ('f p-value', 0.13835139386187015)]
+
+
+
+
+avg_abs_snow_diff_v_time_diff_k2_6000m_may2024.csv
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.191
+Model:                            OLS   Adj. R-squared:                  0.178
+Method:                 Least Squares   F-statistic:                     14.20
+Date:                Mon, 29 Jul 2024   Prob (F-statistic):           0.000377
+Time:                        17:50:53   Log-Likelihood:               -0.62506
+No. Observations:                  62   AIC:                             5.250
+Df Residuals:                      60   BIC:                             9.504
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      0.2562      0.065      3.963      0.000       0.127       0.385
+x              0.0033      0.001      3.769      0.000       0.002       0.005
+==============================================================================
+Omnibus:                        3.557   Durbin-Watson:                   2.294
+Prob(Omnibus):                  0.169   Jarque-Bera (JB):                3.294
+Skew:                           0.493   Prob(JB):                        0.193
+Kurtosis:                       2.451   Cond. No.                         150.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+Breusch-Pagan test results:[('Lagrange multiplier statistic', 0.4464365898332052), ('p-value', 0.5040320366313822), ('f-value', 0.4351688822871291), ('f p-value', 0.5119877669723014)]
+
+
+
+
+avg_abs_wind_speed_diff_v_time_diff_k2_6000m_may2024.csv
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.709
+Model:                            OLS   Adj. R-squared:                  0.704
+Method:                 Least Squares   F-statistic:                     146.1
+Date:                Mon, 29 Jul 2024   Prob (F-statistic):           1.01e-17
+Time:                        17:50:53   Log-Likelihood:                -64.687
+No. Observations:                  62   AIC:                             133.4
+Df Residuals:                      60   BIC:                             137.6
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      1.5463      0.182      8.511      0.000       1.183       1.910
+x              0.0300      0.002     12.089      0.000       0.025       0.035
+==============================================================================
+Omnibus:                        0.233   Durbin-Watson:                   1.846
+Prob(Omnibus):                  0.890   Jarque-Bera (JB):                0.386
+Skew:                           0.121   Prob(JB):                        0.824
+Kurtosis:                       2.699   Cond. No.                         150.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+Breusch-Pagan test results:[('Lagrange multiplier statistic', 0.6916369046303616), ('p-value', 0.4056081662460027), ('f-value', 0.6768768921993252), ('f p-value', 0.413922100564425)]
+
+
+
+
+avg_chill_diff_v_time_diff_k2_6000m_may2024.csv
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.211
+Model:                            OLS   Adj. R-squared:                  0.197
+Method:                 Least Squares   F-statistic:                     16.00
+Date:                Mon, 29 Jul 2024   Prob (F-statistic):           0.000176
+Time:                        17:50:53   Log-Likelihood:                -40.450
+No. Observations:                  62   AIC:                             84.90
+Df Residuals:                      60   BIC:                             89.15
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      0.1293      0.123      1.052      0.297      -0.117       0.375
+x              0.0067      0.002      4.000      0.000       0.003       0.010
+==============================================================================
+Omnibus:                        0.165   Durbin-Watson:                   2.314
+Prob(Omnibus):                  0.921   Jarque-Bera (JB):                0.243
+Skew:                           0.115   Prob(JB):                        0.886
+Kurtosis:                       2.798   Cond. No.                         150.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+Breusch-Pagan test results:[('Lagrange multiplier statistic', 11.55709968551474), ('p-value', 0.0006749104843141285), ('f-value', 13.746750817414025), ('f p-value', 0.0004586728432698216)]
+
+
+
+
+avg_min_temp_diff_v_time_diff_k2_6000m_may2024.csv
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.785
+Model:                            OLS   Adj. R-squared:                  0.781
+Method:                 Least Squares   F-statistic:                     218.8
+Date:                Mon, 29 Jul 2024   Prob (F-statistic):           1.12e-21
+Time:                        17:50:54   Log-Likelihood:                 36.662
+No. Observations:                  62   AIC:                            -69.32
+Df Residuals:                      60   BIC:                            -65.07
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      0.1250      0.035      3.527      0.001       0.054       0.196
+x              0.0071      0.000     14.791      0.000       0.006       0.008
+==============================================================================
+Omnibus:                        5.294   Durbin-Watson:                   2.181
+Prob(Omnibus):                  0.071   Jarque-Bera (JB):                2.664
+Skew:                          -0.243   Prob(JB):                        0.264
+Kurtosis:                       2.108   Cond. No.                         150.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+Breusch-Pagan test results:[('Lagrange multiplier statistic', 3.365597457526025), ('p-value', 0.06657143282131628), ('f-value', 3.4439823498718516), ('f p-value', 0.06839572704265097)]
+
+
+
+
+avg_snow_diff_v_time_diff_k2_6000m_may2024.csv
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.114
+Model:                            OLS   Adj. R-squared:                  0.100
+Method:                 Least Squares   F-statistic:                     8.129
+Date:                Mon, 29 Jul 2024   Prob (F-statistic):            0.00588
+Time:                        17:50:54   Log-Likelihood:                -11.406
+No. Observations:                  65   AIC:                             26.81
+Df Residuals:                      63   BIC:                             31.16
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      0.1057      0.069      1.525      0.132      -0.033       0.244
+x              0.0028      0.001      2.851      0.006       0.001       0.005
+==============================================================================
+Omnibus:                        1.566   Durbin-Watson:                   2.479
+Prob(Omnibus):                  0.457   Jarque-Bera (JB):                1.585
+Skew:                           0.333   Prob(JB):                        0.453
+Kurtosis:                       2.624   Cond. No.                         137.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+Breusch-Pagan test results:[('Lagrange multiplier statistic', 5.299272430096094), ('p-value', 0.021334334000660954), ('f-value', 5.5921288849477095), ('f p-value', 0.02113455338897961)]
+
+
+
+
+avg_wind_speed_diff_v_time_diff_k2_6000m_may2024.csv
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.050
+Model:                            OLS   Adj. R-squared:                  0.034
+Method:                 Least Squares   F-statistic:                     3.159
+Date:                Mon, 29 Jul 2024   Prob (F-statistic):             0.0806
+Time:                        17:50:54   Log-Likelihood:                -100.85
+No. Observations:                  62   AIC:                             205.7
+Df Residuals:                      60   BIC:                             210.0
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept     -0.0667      0.326     -0.205      0.838      -0.718       0.585
+x              0.0079      0.004      1.777      0.081      -0.001       0.017
+==============================================================================
+Omnibus:                        3.511   Durbin-Watson:                   2.437
+Prob(Omnibus):                  0.173   Jarque-Bera (JB):                2.131
+Skew:                           0.224   Prob(JB):                        0.344
+Kurtosis:                       2.210   Cond. No.                         150.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+Breusch-Pagan test results:[('Lagrange multiplier statistic', 7.422386058784587), ('p-value', 0.006441733591966246), ('f-value', 8.159813728880609), ('f p-value', 0.005876380445700114)]
+
+
+
+
