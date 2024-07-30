@@ -1,0 +1,154 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - prod_fact_fore_actual_to_json
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: load_bq_prod_fact_fore_actual
+  retry_config: null
+  status: updated
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: load_bq_prod_fact_fore_actual
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: prod_fact_fore_actual_to_json
+  retry_config: null
+  status: updated
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - load_bq_prod_fact_fore_actual
+  uuid: prod_fact_fore_actual_to_json
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - prod_fore_preds_to_json
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: load_prod_fore_preds_may2024
+  retry_config: null
+  status: updated
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: load_prod_fore_preds_may2024
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: prod_fore_preds_to_json
+  retry_config: null
+  status: updated
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - load_prod_fore_preds_may2024
+  uuid: prod_fore_preds_to_json
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - prod_min_max_temp_diff_to_json
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: load_prod_min_max_temp_diff
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: load_prod_min_max_temp_diff
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: prod_min_max_temp_diff_to_json
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - load_prod_min_max_temp_diff
+  uuid: prod_min_max_temp_diff_to_json
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - prod_avg_morn_chill_to_json
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: load_prod_avg_morn_chill_june2024
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: load_prod_avg_morn_chill_june2024
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: prod_avg_morn_chill_to_json
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - load_prod_avg_morn_chill_june2024
+  uuid: prod_avg_morn_chill_to_json
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2024-07-23 15:46:27.166428+00:00'
+data_integration: null
+description: null
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: bq_dbt_prod_to_jsons
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags: []
+type: python
+updated_at: '2024-07-30 19:19:54'
+uuid: bq_dbt_prod_to_jsons
+variables_dir: /home/src/mage_data/scrape-mountain-weather-data
+widgets: []

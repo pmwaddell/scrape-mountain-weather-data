@@ -9,3 +9,4 @@
 /scrape_mountain_weather_data/src/forecast_data/scraped_forecasts_staging.csv
 /scrape_mountain_weather_data/src/forecast_data/scraped_forecasts_staging_old.csv
 /scrape_mountain_weather_data/src/forecast_data/forecasts_final.parquet
+/scrape_mountain_weather_data/src/json_for_tableau
