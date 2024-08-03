@@ -13,7 +13,7 @@ def export_data_to_big_query(df: DataFrame, **kwargs) -> None:
     """
     Exports final forecast data to a table in BQ.
     """
-    table_id = 'mountain_weather_data.forecasts'
+    table_id = 'mountain_weather_data.forecasting'
     config_path = path.join(get_repo_path(), 'io_config.yaml')
     config_profile = 'default'
 

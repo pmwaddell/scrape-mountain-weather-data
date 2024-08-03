@@ -5,7 +5,7 @@ A script which scrapes weather forecast data from mountain-forecast.com.
 Given a map of mountain names to elevations, data from mountain-forecast.com is
 scraped and compiled into a Dataframe, containing temperature, wind speed,
 rain, snow data and more. Both the current conditions on the mountain and
-forecasts of future weather can be obtained.
+forecasting of future weather can be obtained.
 """
 __author__ = "Peter Waddell"
 __copyright__ = "Copyright 2024"
@@ -114,7 +114,7 @@ def find_elev_feature(mtn_name, elev, html):
     """
     elev_feature_regex = re.compile(
         fr"""
-        (<a\ class="forecast-table-elevation__link\ forecast-table-elevation__link--is-active"\ data-elevation-level="{elev}"\ data-elevation-group="[a-z]*"\ href="/peaks/{mtn_name}/forecasts/{elev}">)
+        (<a\ class="forecast-table-elevation__link\ forecast-table-elevation__link--is-active"\ data-elevation-level="{elev}"\ data-elevation-group="[a-z]*"\ href="/peaks/{mtn_name}/forecasting/{elev}">)
         # above: should only match the elevation feature at the searched elevation
         (<span\ class="forecast-table-elevation__prefix"\ data-elevation-prefix=".*?">)
         ([a-zA-Z]*)     # name of the elevation feature (e.g. base, peak...)
@@ -219,7 +219,7 @@ def determine_forecast_statuses(l):
     """
     In the forecast table, the first (i.e. leftmost) cell contains the current,
     or "actual", data (meaning, presumably it represents the weather on the
-    mountain at that time) and the remainder are forecasts for times in the
+    mountain at that time) and the remainder are forecasting for times in the
     future. So, this function returns a list of strings with length equal to
     the number of cells in the table. The first is 'actual' and the remainder
     are 'forecast', so they correspond to the cells in the table.
@@ -257,7 +257,7 @@ def approximate_forecast_times(html, forecast_table):
     Returns
     -------
     List
-        List of Datetimes corresponding to the forecasts in the table, based on
+        List of Datetimes corresponding to the forecasting in the table, based on
         the date and "time name".
     """
     forecast_date_regex = re.compile(
@@ -406,7 +406,7 @@ def find_wind_speeds(forecast_table):
 
 def find_snow(forecast_table):
     """
-    This function gives the sequence of snow forecasts in the table, in cm.
+    This function gives the sequence of snow forecasting in the table, in cm.
 
     Parameters
     ----------
@@ -416,7 +416,7 @@ def find_snow(forecast_table):
     Returns
     -------
     List
-        List containing the snow forecasts from the forecast table.
+        List containing the snow forecasting from the forecast table.
     """
     snow_regex = re.compile(
         r"""
@@ -439,7 +439,7 @@ def find_snow(forecast_table):
 
 def find_rain(forecast_table):
     """
-    This function gives the sequence of rain forecasts in the table, in mm.
+    This function gives the sequence of rain forecasting in the table, in mm.
 
     Parameters
     ----------
@@ -449,7 +449,7 @@ def find_rain(forecast_table):
     Returns
     -------
     List
-        List containing the rain forecasts from the forecast table.
+        List containing the rain forecasting from the forecast table.
     """
     rain_regex = re.compile(
         r"""
@@ -471,7 +471,7 @@ def find_rain(forecast_table):
 
 def find_max_temps(forecast_table):
     """
-    This function gives the sequence of max. temp. forecasts in the table, in C.
+    This function gives the sequence of max. temp. forecasting in the table, in C.
 
     Parameters
     ----------
@@ -481,7 +481,7 @@ def find_max_temps(forecast_table):
     Returns
     -------
     List
-        List containing the max. temp. forecasts from the forecast table.
+        List containing the max. temp. forecasting from the forecast table.
     """
     max_temp_regex = re.compile(
         r"""
@@ -500,7 +500,7 @@ def find_max_temps(forecast_table):
 
 def find_min_temps(forecast_table):
     """
-    This function gives the sequence of min. temp. forecasts in the table, in C.
+    This function gives the sequence of min. temp. forecasting in the table, in C.
 
     Parameters
     ----------
@@ -510,7 +510,7 @@ def find_min_temps(forecast_table):
     Returns
     -------
     List
-        List containing the min. temp. forecasts from the forecast table.
+        List containing the min. temp. forecasting from the forecast table.
     """
     min_temp_regex = re.compile(
         r"""
@@ -529,7 +529,7 @@ def find_min_temps(forecast_table):
 
 def find_chills(forecast_table):
     """
-    This function gives the sequence of chill forecasts in the table, in C.
+    This function gives the sequence of chill forecasting in the table, in C.
 
     Parameters
     ----------
@@ -539,7 +539,7 @@ def find_chills(forecast_table):
     Returns
     -------
     List
-        List containing the chill forecasts from the forecast table.
+        List containing the chill forecasting from the forecast table.
     """
     chill_regex = re.compile(
         r"""
@@ -558,7 +558,7 @@ def find_chills(forecast_table):
 
 def find_freezing_levels(forecast_table):
     """
-    This function gives the sequence of freezing level forecasts in the table,
+    This function gives the sequence of freezing level forecasting in the table,
     in m.
 
     Parameters
@@ -569,7 +569,7 @@ def find_freezing_levels(forecast_table):
     Returns
     -------
     List
-        List containing the freezing level forecasts from the forecast table.
+        List containing the freezing level forecasting from the forecast table.
     """
     freezing_level_regex = re.compile(
         r"""
@@ -588,7 +588,7 @@ def find_freezing_levels(forecast_table):
 
 def find_cloud_bases(forecast_table):
     """
-    This function gives the sequence of cloud base forecasts in the table,
+    This function gives the sequence of cloud base forecasting in the table,
     in m.
 
     Parameters
@@ -599,7 +599,7 @@ def find_cloud_bases(forecast_table):
     Returns
     -------
     List
-        List containing the cloud base forecasts from the forecast table.
+        List containing the cloud base forecasting from the forecast table.
     """
     cloud_base_regex = re.compile(
         r"""

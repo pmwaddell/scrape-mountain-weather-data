@@ -13,7 +13,7 @@ def load_data_from_big_query(*args, **kwargs):
     """
     Loads final (i.e., upserted) forecast data from Bigquery.
     """
-    query = 'SELECT * FROM `mountain-weather-data.mountain_weather_data.forecasts`'
+    query = 'SELECT * FROM `mountain-weather-data.mountain_weather_data.forecasting`'
     config_path = path.join(get_repo_path(), 'io_config.yaml')
     config_profile = 'default'
 
