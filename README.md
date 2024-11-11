@@ -16,7 +16,8 @@ Picture from Wikipedia: https://en.wikipedia.org/wiki/Nanga_Parbat#/media/File:N
 
 ## My Analysis
 
-[Some results of my analysis](scrape_mountain_weather_data/presentation_slides/Time%20Series%20Analysis%20of%20Chill%20Data,%20Everest%20at%208000m.pdf) can be found in the scrape_mountain_weather_data/presentation_slides directory.
+[Some results of my analysis](scrape_mountain_weather_data/presentation_slides/Time%20Series%20Analysis%20of%20Chill%20Data,%20Everest%20at%208000m.pdf) 
+can be found in the scrape_mountain_weather_data/presentation_slides directory.
 I conducted a time series analysis of the weather at 8000 m on Mount Everest, and used an ARIMA model to model it.
 
 Other results can be found on my Looker site. At present these include 
@@ -47,10 +48,9 @@ Note that when the scraped_forecasts_final table is first created, it needs to h
 elevation, local_time_issued and local_time_of_forecast set as primary keys. The command for this can also be found
 in sql_queries_backup.txt. Note also that if Autocommit is off, you may need to add COMMIT; after these queries.
 
-The pipelines postgres_f_to_csv (for the "final" forecast table), postgres_s_to_csv (for the "staging" forecast table) 
-and csv_to_postgres can be used to save the data in Postgres to a local .csv file
-found in src/forecast_data, and to load the data from a .csv file in src/forecast_data back into Postgres (under a 
-Schema called loaded_backups) respectively.
+The pipelines pg_fore_f_to_csv (for the "final" forecast table), postgres_fore_s_to_csv (for the "staging" forecast table) 
+and csv_fore_f_to_pg can be used to save the data in Postgres to a local .csv file  found in src/forecast_data, and to 
+load the data from a .csv file in src/forecast_data back into Postgres (under a Schema called loaded_backups) respectively.
 
 To send data to BQ, you need to set up a GCP account and project. Then go into the project and set up a 
 Service Account as project owner. Create a Key for this account, download it and place it into the directory
